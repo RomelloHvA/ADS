@@ -34,7 +34,9 @@ public class Wagon {
      * @return  whether this wagon has a wagon appended at the tail
      */
     public boolean hasNextWagon() {
-        // TODO
+        if (nextWagon != null){
+            return true;
+        }
 
         return false;
     }
@@ -43,8 +45,9 @@ public class Wagon {
      * @return  whether this wagon has a wagon prepended at the front
      */
     public boolean hasPreviousWagon() {
-        // TODO
-
+        if (previousWagon != null){
+            return true;
+        }
         return false;
     }
 
@@ -54,9 +57,15 @@ public class Wagon {
      * @return  the last wagon
      */
     public Wagon getLastWagonAttached() {
-        // TODO find the last wagon in the sequence
+        if (nextWagon != null){
+            Wagon searchWagon = nextWagon;
+            while (searchWagon.hasNextWagon()) {
+                searchWagon = searchWagon.getNextWagon();
+            }
+            return searchWagon;
+        }
 
-        return null;
+        return this;
     }
 
     /**
@@ -64,14 +73,16 @@ public class Wagon {
      * including this wagon itself.
      */
     public int getSequenceLength() {
-
-        int currentSequenceLength = 1;
-        while (nextWagon != null){
-            currentSequenceLength++;
+        if (nextWagon != null){
+            Wagon searchWagon = nextWagon;
+            int length = 2;
+            while (searchWagon.hasNextWagon()) {
+                searchWagon = searchWagon.getNextWagon();
+                length++;
+            }
+            return length;
         }
-        // TODO traverse the sequence and find its length
-
-        return currentSequenceLength;
+        return 1;
     }
 
     /**

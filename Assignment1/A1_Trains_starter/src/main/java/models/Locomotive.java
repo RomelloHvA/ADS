@@ -14,5 +14,11 @@ public class Locomotive {
         return maxWagons;
     }
 
-    // TODO
+    public int getLocNumber() {
+        return locNumber;
+    }
+
+    public int setLocNumber(int locNumber) {
+        this.locNumber = locNumber;
+    }
 }

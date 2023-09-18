@@ -22,9 +22,8 @@ public class Train {
      * @return
      */
     public boolean hasWagons() {
-        // TODO
 
-        return false;   // replace by proper outcome
+        return firstWagon != null;   // replace by proper outcome
     }
 
     /**
@@ -33,8 +32,11 @@ public class Train {
      * @return
      */
     public boolean isPassengerTrain() {
-        return firstWagon instanceof PassengerWagon;
-    }
+        if (firstWagon instanceof PassengerWagon) {
+            return true;
+        }
+
+        return false;
 
     /**
      * A train is a freight train when its first wagon is a FreightWagon
@@ -42,7 +44,11 @@ public class Train {
      * @return
      */
     public boolean isFreightTrain() {
-        return firstWagon instanceof FreightWagon;   // replace by proper outcome
+        if (firstWagon instanceof FreightWagon) {
+            return true;
+        }
+
+        return false;
     }
 
     public Locomotive getEngine() {
@@ -59,35 +65,50 @@ public class Train {
      * @param wagon the first wagon of a sequence of wagons to be attached (can be null)
      */
     public void setFirstWagon(Wagon wagon) {
-        // TODO
+        firstWagon = wagon;
     }
 
     /**
      * @return  the number of Wagons connected to the train
      */
     public int getNumberOfWagons() {
-        // TODO
+        Wagon searchWagon = firstWagon;
+        int counter = 1;
+        while (searchWagon.hasNextWagon()) {
+            counter++;
+            searchWagon = searchWagon.getNextWagon();
+        }
 
-        return 0;   // replace by proper outcome
+
+        return counter;
     }
 
     /**
      * @return  the last wagon attached to the train
      */
     public Wagon getLastWagonAttached() {
-        // TODO
-
-        return null;    // replace by proper outcome
-    }
+        if (firstWagon != null){
+            return firstWagon.getLastWagonAttached();
+        }
+        return null;
 
     /**
      * @return  the total number of seats on a passenger train
      *          (return 0 for a freight train)
      */
     public int getTotalNumberOfSeats() {
-        // TODO
+        if (firstWagon instanceof PassengerWagon) {
+            Wagon searchWagon = firstWagon;
+            int totalSeats = 0;
+            while   (searchWagon.hasNextWagon()) {
+                totalSeats += searchWagon.getNumberOfSeats();
+                searchWagon = searchWagon.getNextWagon();
+            }
+            return totalSeats;
+        }
+        throw new UnsupportedOperationException("Wagons aren't passenger wagons");
 
-        return 0;   // replace by proper outcome
+        return -1;   // replace by proper outcome
     }
 
     /**
@@ -97,9 +118,19 @@ public class Train {
      *
      */
     public int getTotalMaxWeight() {
-        // TODO
+        if (firstWagon instanceof FreightWagon) {
+            Wagon searchWagon = firstWagon;
+            int totalWeight = 0;
+            while (searchWagon.hasNextWagon()) {
+                totalWeight += searchWagon.getMaxWeight();
+                searchWagon = searchWagon.getNextWagon();
+            }
+            return totalWeight;
+        }
+        throw new UnsupportedOperationException("Wagons aren't freight wagons");
 
-        return 0;   // replace by proper outcome
+
+        return -1;   // replace by proper outcome
     }
 
      /**
@@ -109,8 +140,16 @@ public class Train {
      *          (return null if the position is not valid for this train)
      */
     public Wagon findWagonAtPosition(int position) {
-        // TODO
-
+        if (firstWagon != null){
+            Wagon searchWagon = firstWagon;
+            for (int i = 0; i < position; i++) {
+                if(!searchWagon.hasNext()){
+                    return null;
+                }
+                searchWagon = searchWagon.getNextWagon();
+            }
+            return searchWagon;
+        }
         return null;    // replace by proper outcome
     }
 
@@ -121,8 +160,15 @@ public class Train {
      *          (return null if no wagon was found with the given wagonId)
      */
     public Wagon findWagonById(int wagonId) {
-        // TODO
-
+        if (firstWagon != null) {
+            Wagon searchWagon = firstWagon;
+            while (searchWagon.hasNextWagon()) {
+                if (searchWagon.getId() == wagonId) {
+                    return searchWagon;
+                }
+                searchWagon = searchWagon.getNextWagon();
+            }
+        }
         return null;    // replace by proper outcome
     }
 
@@ -238,4 +284,3 @@ public class Train {
 
     // TODO string representation of a train
 }
-
