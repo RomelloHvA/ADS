@@ -34,6 +34,7 @@ public class Train {
      */
     public boolean isPassengerTrain() {
         return firstWagon instanceof PassengerWagon;
+    }
 
     /**
      * A train is a freight train when its first wagon is a FreightWagon
@@ -41,9 +42,7 @@ public class Train {
      * @return
      */
     public boolean isFreightTrain() {
-        // TODO
-
-        return false;   // replace by proper outcome
+        return firstWagon instanceof FreightWagon;   // replace by proper outcome
     }
 
     public Locomotive getEngine() {
@@ -239,4 +238,4 @@ public class Train {
 
     // TODO string representation of a train
 }
-}
+
