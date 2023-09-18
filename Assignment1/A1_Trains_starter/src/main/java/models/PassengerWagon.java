@@ -7,7 +7,7 @@ public class PassengerWagon extends Wagon {
 
     public PassengerWagon(int wagonId, int numberOfSeats) {
         // TODO
-        super();
+        super(wagonId);
         this.numberOfSeats = numberOfSeats;
     }
 

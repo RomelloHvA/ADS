@@ -5,13 +5,13 @@ public class FreightWagon extends Wagon {
 
 
     public FreightWagon(int wagonId, int maxWeight) {
-        super();
+        super(wagonId);
         this.maxWeight = maxWeight;
         // TODO
     }
 
     public int getMaxWeight() {
         // TODO
-        return 0;
+        return maxWeight;
     }
 }
