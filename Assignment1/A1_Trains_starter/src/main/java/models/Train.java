@@ -33,10 +33,7 @@ public class Train {
      * @return
      */
     public boolean isPassengerTrain() {
-        // TODO
-
-        return false;   // replace by proper outcome
-    }
+        return firstWagon instanceof PassengerWagon;
 
     /**
      * A train is a freight train when its first wagon is a FreightWagon
