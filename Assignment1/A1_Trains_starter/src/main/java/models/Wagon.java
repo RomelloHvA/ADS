@@ -64,9 +64,14 @@ public class Wagon {
      * including this wagon itself.
      */
     public int getSequenceLength() {
+
+        int currentSequenceLength = 1;
+        while (nextWagon != null){
+            currentSequenceLength++;
+        }
         // TODO traverse the sequence and find its length
 
-        return 0;
+        return currentSequenceLength;
     }
 
     /**
