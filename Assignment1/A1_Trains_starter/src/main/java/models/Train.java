@@ -171,7 +171,18 @@ public class Train {
      */
     public boolean canAttach(Wagon wagon) {
 
-        return false;   // replace by proper outcome
+
+    if (wagon.getClass() == firstWagon.getClass() && engine.getMaxWagons() > firstWagon.getSequenceLength()){
+        Wagon wagonToCheck = firstWagon;
+        for (int i = 0; i < firstWagon.getSequenceLength(); i++) {
+
+            if (wagonToCheck == wagon){
+                return false;
+            }
+            wagonToCheck = wagonToCheck.getNextWagon();
+        }
+    }
+    return true;
     }
 
     /**
