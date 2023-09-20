@@ -128,6 +128,7 @@ public abstract class Wagon {
      *          or <code>null</code> if it had no previousWagon.
      */
     public Wagon detachFront() {
+
         if (previousWagon != null) {
             Wagon front = previousWagon;
             previousWagon = null;

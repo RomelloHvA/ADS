@@ -282,6 +282,9 @@ public class Train {
      * (No change if the train has no wagons or only one wagon)
      */
     public void reverse() {
+        if (getNumberOfWagons() >= 1 ){
+            firstWagon.reverseSequence();
+        }
         // TODO
 
     }
