@@ -155,10 +155,8 @@ public class Wagon {
     public void reAttachTo(Wagon front) {
         if (front == null){
             throw new IllegalArgumentException("front wagon cannot be null");
-            return;
         } else if (front == this) {
             throw new IllegalArgumentException("front wagon cannot be this wagon");
-            return;
         }
         front.detachTail();
         this.detachFront();
@@ -186,7 +184,7 @@ public class Wagon {
      */
     public Wagon reverseSequence() {
         if (nextWagon == null){
-           return;
+           return null;
         }
         Wagon newFrontWagon = this.getLastWagonAttached();
 
@@ -201,10 +199,10 @@ public class Wagon {
             Wagon wagonToAttachPrevious = wagonToAttach.getNextWagon();
             Wagon wagonToAttachNext = wagonToAttach.getPreviousWagon();
 
-            wagonToAttach.setNextWagon(); = wagonToAttachNext;
-            wagonToAttach.setPreviousWagon(); = wagonToAttachPrevious;
+            wagonToAttach.setNextWagon(wagonToAttachNext);
+            wagonToAttach.setPreviousWagon(wagonToAttachPrevious);
 
-            wagonToAttach = WagonToAttachNext;
+            wagonToAttach = wagonToAttachNext;
 
         }
 
