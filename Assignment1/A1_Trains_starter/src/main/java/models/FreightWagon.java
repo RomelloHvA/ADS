@@ -16,4 +16,9 @@ public class FreightWagon extends Wagon {
     public void setMaxWeight(int maxWeight){
         this.maxWeight = maxWeight;
     }
+
+    @Override
+    public String toString() {
+        return "[Wagon-" + id + "]";
+    }
 }

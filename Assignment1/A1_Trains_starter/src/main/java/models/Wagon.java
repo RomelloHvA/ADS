@@ -1,6 +1,6 @@
 package models;
 
-public class Wagon {
+public abstract class Wagon {
     protected int id;               // some unique ID of a Wagon
     private Wagon nextWagon;        // another wagon that is appended at the tail of this wagon
                                     // a.k.a. the successor of this wagon in a sequence
@@ -38,21 +38,14 @@ public class Wagon {
      * @return  whether this wagon has a wagon appended at the tail
      */
     public boolean hasNextWagon() {
-        if (nextWagon != null){
-            return true;
-        }
-
-        return false;
+        return nextWagon != null;
     }
 
     /**
      * @return  whether this wagon has a wagon prepended at the front
      */
     public boolean hasPreviousWagon() {
-        if (previousWagon != null){
-            return true;
-        }
-        return false;
+        return previousWagon != null;
     }
 
     /**
