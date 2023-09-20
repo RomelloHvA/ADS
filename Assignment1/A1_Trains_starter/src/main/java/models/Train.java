@@ -64,7 +64,11 @@ public class Train {
      * @return  the number of Wagons connected to the train
      */
     public int getNumberOfWagons() {
+
         Wagon searchWagon = firstWagon;
+        if (firstWagon == null){
+            return 0;
+        }
         int counter = 1;
         while (searchWagon.hasNextWagon()) {
             counter++;
@@ -171,8 +175,7 @@ public class Train {
      */
     public boolean canAttach(Wagon wagon) {
 
-
-    if (wagon.getClass() == firstWagon.getClass() && engine.getMaxWagons() > firstWagon.getSequenceLength()){
+    if (wagon.getClass() == firstWagon.getClass() && engine.getMaxWagons() >= firstWagon.getSequenceLength() + wagon.getSequenceLength()){
         Wagon wagonToCheck = firstWagon;
         for (int i = 0; i < firstWagon.getSequenceLength(); i++) {
 
@@ -194,16 +197,19 @@ public class Train {
      * @return  whether the attachment could be completed successfully
      */
     public boolean attachToRear(Wagon wagon) {
-        // TODO
-
-        return false;   // replace by proper outcome
+        if (wagon.getClass() == getLastWagonAttached().getClass()&& engine.getMaxWagons() >= firstWagon.getSequenceLength() + wagon.getSequenceLength()){
+            firstWagon.detachFront();
+            getLastWagonAttached().attachTail(wagon);
+            return true;
+        }
+        return false;
     }
 
     /**
      * Tries to insert the given sequence of wagons at the front of the train
      * (the front is at position one, before the current first wagon, if any)
      * No change is made if the insertion cannot be made.
-     * (when the sequence is not compatible or the engine has insufficient capacity)
+     *      * (when the sequence is not compatible or the engine has insufficient capacity)
      * if insertion is possible, the head wagon is first detached from its predecessors, if any
      * @param wagon the head wagon of a sequence of wagons to be inserted
      * @return  whether the insertion could be completed successfully
