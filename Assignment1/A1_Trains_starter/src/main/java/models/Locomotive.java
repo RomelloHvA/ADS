@@ -18,7 +18,7 @@ public class Locomotive {
         return locNumber;
     }
 
-    public int setLocNumber(int locNumber) {
+    public void setLocNumber(int locNumber) {
         this.locNumber = locNumber;
     }
 }

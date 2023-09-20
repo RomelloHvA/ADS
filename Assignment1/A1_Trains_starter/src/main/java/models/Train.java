@@ -23,7 +23,7 @@ public class Train {
      */
     public boolean hasWagons() {
 
-        return firstWagon != null;   // replace by proper outcome
+        return firstWagon != null;
     }
 
     /**
@@ -33,7 +33,7 @@ public class Train {
      */
     public boolean isPassengerTrain() {
         return firstWagon instanceof PassengerWagon;
-
+    }
     /**
      * A train is a freight train when its first wagon is a FreightWagon
      * (we do not worry about the posibility of mixed compositions here)
@@ -79,28 +79,27 @@ public class Train {
      * @return  the last wagon attached to the train
      */
     public Wagon getLastWagonAttached() {
-        if (firstWagon != null){
-            return firstWagon.getLastWagonAttached();
+            if (firstWagon != null) {
+                return firstWagon.getLastWagonAttached();
+            }
+            return null;
         }
-        return null;
 
     /**
      * @return  the total number of seats on a passenger train
      *          (return 0 for a freight train)
      */
     public int getTotalNumberOfSeats() {
-        if (firstWagon instanceof PassengerWagon) {
-            Wagon searchWagon = firstWagon;
+        if (firstWagon instanceof PassengerWagon searchWagon) {
             int totalSeats = 0;
             while   (searchWagon.hasNextWagon()) {
                 totalSeats += searchWagon.getNumberOfSeats();
-                searchWagon = searchWagon.getNextWagon();
+                searchWagon = (PassengerWagon) searchWagon.getNextWagon();
             }
             return totalSeats;
         }
         throw new UnsupportedOperationException("Wagons aren't passenger wagons");
 
-        return -1;   // replace by proper outcome
     }
 
     /**
@@ -110,19 +109,16 @@ public class Train {
      *
      */
     public int getTotalMaxWeight() {
-        if (firstWagon instanceof FreightWagon) {
-            Wagon searchWagon = firstWagon;
+        if (firstWagon instanceof FreightWagon searchWagon) {
             int totalWeight = 0;
             while (searchWagon.hasNextWagon()) {
                 totalWeight += searchWagon.getMaxWeight();
-                searchWagon = searchWagon.getNextWagon();
+                searchWagon = (FreightWagon) searchWagon.getNextWagon();
             }
             return totalWeight;
         }
         throw new UnsupportedOperationException("Wagons aren't freight wagons");
 
-
-        return -1;   // replace by proper outcome
     }
 
      /**
@@ -135,7 +131,7 @@ public class Train {
         if (firstWagon != null){
             Wagon searchWagon = firstWagon;
             for (int i = 0; i < position; i++) {
-                if(!searchWagon.hasNext()){
+                if(!searchWagon.hasNextWagon()){
                     return null;
                 }
                 searchWagon = searchWagon.getNextWagon();
@@ -174,7 +170,6 @@ public class Train {
      * @return whether type and capacity of this train can accommodate attachment of the sequence
      */
     public boolean canAttach(Wagon wagon) {
-        // TODO
 
         return false;   // replace by proper outcome
     }
@@ -276,3 +271,4 @@ public class Train {
 
     // TODO string representation of a train
 }
+
