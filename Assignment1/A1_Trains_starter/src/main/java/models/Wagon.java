@@ -163,7 +163,7 @@ public abstract class Wagon {
      */
     public void removeFromSequence() {
 
-        //Firstwagon actions
+        //First wagon actions
         if (previousWagon == null) {
             nextWagon.detachFront();
             nextWagon = null;
@@ -192,31 +192,61 @@ public abstract class Wagon {
      * @return the new start Wagon of the reversed sequence (with is the former last Wagon of the original sequence)
      */
     public Wagon reverseSequence() {
+        // No action
         if (nextWagon == null){
-           return null;
+            return null;
+            // Middle of sequence
+        } else if (previousWagon != null) {
+            Wagon lastWagon = getLastWagonAttached();
+            Wagon frontWagon = previousWagon;
+
+            Wagon editWagon = lastWagon;
+
+            Wagon editNext;
+            Wagon editPrevious;
+            lastWagon.reAttachTo(frontWagon);
+            lastWagon.setNextWagon(editWagon.previousWagon);
+
+            editWagon = lastWagon.nextWagon;
+            // Loop over remaining
+            while (editWagon.previousWagon == frontWagon) {
+                editNext = editWagon.nextWagon;
+                editPrevious = editWagon.previousWagon;
+
+                editWagon.setNextWagon(editPrevious);
+                editWagon.setPreviousWagon(editNext);
+
+                editWagon = editWagon.nextWagon;
+
+
+            }
+            editWagon.setPreviousWagon(editWagon.nextWagon);
+            editWagon.setNextWagon(null);
+
+return frontWagon;
+        } else {
+            Wagon lastWagon = getLastWagonAttached();
+
+            Wagon editWagon = lastWagon;
+            Wagon editNext;
+            Wagon editPrevious;
+
+            while (editWagon != null) {
+
+                editNext = editWagon.nextWagon;
+                editPrevious = editWagon.previousWagon;
+
+                editWagon.setNextWagon(editPrevious);
+                editWagon.setPreviousWagon(editNext);
+
+                editWagon = editWagon.nextWagon;
+
+            }
+
+            return lastWagon;
+
         }
-        Wagon newFrontWagon = this.getLastWagonAttached();
 
-        Wagon wagonToAttach = newFrontWagon.detachFront();
-
-        newFrontWagon.attachTail(wagonToAttach);
-
-        wagonToAttach = wagonToAttach.getNextWagon();
-
-
-        while (wagonToAttach != null){
-            Wagon wagonToAttachPrevious = wagonToAttach.getNextWagon();
-            Wagon wagonToAttachNext = wagonToAttach.getPreviousWagon();
-
-            wagonToAttach.setNextWagon(wagonToAttachNext);
-            wagonToAttach.setPreviousWagon(wagonToAttachPrevious);
-
-            wagonToAttach = wagonToAttachNext;
-
-        }
-
-
-        return newFrontWagon;
     }
 
     // TODO string representation of a Wagon
