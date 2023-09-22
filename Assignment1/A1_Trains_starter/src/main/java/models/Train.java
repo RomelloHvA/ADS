@@ -145,7 +145,7 @@ public class Train {
             }
             return searchWagon;
         }
-        return null;    // replace by proper outcome
+        return null;
     }
 
     /**
@@ -155,17 +155,23 @@ public class Train {
      *          (return null if no wagon was found with the given wagonId)
      */
     public Wagon findWagonById(int wagonId) {
+        Wagon indexWagon = null;
+
         if (hasWagons()) {
-            Wagon searchWagon = firstWagon;
-            while (searchWagon.hasNextWagon()) {
-                if (searchWagon.getId() ==  wagonId) {
-                    return searchWagon;
+            indexWagon = firstWagon;
+
+            while (indexWagon.getId() != wagonId){
+                indexWagon = indexWagon.getNextWagon();
+                if (!indexWagon.hasNextWagon() && indexWagon.getId() != wagonId){
+                    return null;
                 }
-                searchWagon = searchWagon.getNextWagon();
+
             }
         }
-        return null;    // replace by proper outcome
+        return indexWagon;
+
     }
+
 
     /**
      * Determines if the given sequence of wagons can be attached to this train
@@ -178,17 +184,24 @@ public class Train {
      */
     public boolean canAttach(Wagon wagon) {
 
-    if (wagon.getClass() == firstWagon.getClass() && engine.getMaxWagons() >= firstWagon.getSequenceLength() + wagon.getSequenceLength()){
-        Wagon wagonToCheck = firstWagon;
-        for (int i = 0; i < firstWagon.getSequenceLength(); i++) {
-
-            if (wagonToCheck == wagon){
-                return false;
+        // Verify if firstwagon is empty, type match and engine capacity
+        if (firstWagon != null
+                && wagon.getClass() == firstWagon.getClass()
+                && engine.getMaxWagons() >= (wagon.getSequenceLength() + firstWagon.getSequenceLength())) {
+            //Verify if part of train already
+            Wagon indexWagon = firstWagon;
+            for (int i = 0; i < firstWagon.getSequenceLength(); i++) {
+                // If part of the train cannot attach
+                if (indexWagon == wagon || indexWagon == null){
+                    return false;
+                }
+                indexWagon = indexWagon.getNextWagon();
             }
-            wagonToCheck = wagonToCheck.getNextWagon();
-        }
-    }
-    return true;
+
+            return true;
+            // Also checks if the sequence fits the engine on an empty train.
+        } else return firstWagon == null && engine.getMaxWagons() >= wagon.getSequenceLength();
+
     }
 
     /**
@@ -200,9 +213,21 @@ public class Train {
      * @return  whether the attachment could be completed successfully
      */
     public boolean attachToRear(Wagon wagon) {
-        if (wagon.getClass() == getLastWagonAttached().getClass()&& engine.getMaxWagons() >= firstWagon.getSequenceLength() + wagon.getSequenceLength()){
-            firstWagon.detachFront();
-            getLastWagonAttached().attachTail(wagon);
+
+        if (wagon == null){
+            return false;
+        }
+
+        if (firstWagon != null && firstWagon.getClass() == wagon.getClass()
+                && engine.getMaxWagons() >= (firstWagon.getSequenceLength() + wagon.getSequenceLength())){
+                wagon.detachFront();
+                wagon.reAttachTo(getLastWagonAttached());
+            return true;
+
+            // Can always be attached if no first wagon.
+        } else if (firstWagon == null && engine.getMaxWagons() > wagon.getSequenceLength()) {
+            wagon.detachFront();
+            setFirstWagon(wagon);
             return true;
         }
         return false;
@@ -218,6 +243,14 @@ public class Train {
      * @return  whether the insertion could be completed successfully
      */
     public boolean insertAtFront(Wagon wagon) {
+
+        if (firstWagon != null && firstWagon.getClass() == wagon.getClass()
+                && engine.getMaxWagons() >= (firstWagon.getSequenceLength() + wagon.getSequenceLength())){
+
+            return true;
+        } else if (firstWagon == null && engine.getMaxWagons() >= wagon.getSequenceLength()) {
+            return true;
+        }
         // TODO
 
         return false;   // replace by proper outcome
@@ -297,16 +330,18 @@ public class Train {
 
         StringBuilder trainString = new StringBuilder(this.engine.toString());
 
-        if (hasWagons()){
+        int wagonLength = 0;
+
+        if (hasWagons() && firstWagon != null){
             Wagon currentWagon = firstWagon;
+            wagonLength = firstWagon.getSequenceLength();
            while (currentWagon.hasNextWagon()){
                trainString.append(currentWagon);
                currentWagon = currentWagon.getNextWagon();
            }
         }
 
-        return String.format("%s with %d wagons from %s to %s\n" +
-                "Total number of seats: %d ", trainString, firstWagon.getSequenceLength(), origin, destination, getTotalNumberOfSeats());
+        return String.format("%s with %d wagons from %s to %s", trainString, wagonLength, origin, destination);
 
     }
 
