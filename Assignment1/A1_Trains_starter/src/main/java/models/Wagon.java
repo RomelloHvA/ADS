@@ -195,35 +195,38 @@ public abstract class Wagon {
         // No action
         if (nextWagon == null){
             return null;
-            // Middle of sequence
+
+            // Middle of sequence reverse
         } else if (previousWagon != null) {
-            Wagon lastWagon = getLastWagonAttached();
-            Wagon frontWagon = previousWagon;
+            Wagon wagonBeforeSequence = previousWagon;
+            Wagon currentWagon = this;
 
-            Wagon editWagon = lastWagon;
+            Wagon currentNext = currentWagon.nextWagon;
+            Wagon currentPrevious;
 
-            Wagon editNext;
-            Wagon editPrevious;
-            lastWagon.reAttachTo(frontWagon);
-            lastWagon.setNextWagon(editWagon.previousWagon);
+            currentWagon.setNextWagon(null);
+            currentWagon.setPreviousWagon(currentNext);
 
-            editWagon = lastWagon.nextWagon;
-            // Loop over remaining
-            while (editWagon.previousWagon == frontWagon) {
-                editNext = editWagon.nextWagon;
-                editPrevious = editWagon.previousWagon;
+            currentWagon = currentNext;
 
-                editWagon.setNextWagon(editPrevious);
-                editWagon.setPreviousWagon(editNext);
+            while (currentWagon.nextWagon != null){
+                currentNext = currentWagon.nextWagon;
+                currentPrevious = currentWagon.previousWagon;
 
-                editWagon = editWagon.nextWagon;
+                currentWagon.setNextWagon(currentPrevious);
+                currentWagon.setPreviousWagon(currentNext);
 
-
+                currentWagon = currentNext;
             }
-            editWagon.setPreviousWagon(editWagon.nextWagon);
-            editWagon.setNextWagon(null);
 
-return frontWagon;
+            currentWagon.setNextWagon(currentWagon.previousWagon);
+            wagonBeforeSequence.setNextWagon(currentWagon);
+            currentWagon.setPreviousWagon(wagonBeforeSequence);
+
+            return currentWagon;
+
+
+// First in sequence reverse.
         } else {
             Wagon lastWagon = getLastWagonAttached();
 
