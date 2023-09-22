@@ -16,8 +16,4 @@ public class PassengerWagon extends Wagon {
         this.numberOfSeats = numberOfSeats;
     }
 
-    @Override
-    public String toString() {
-        return "[Wagon-" + id + "]";
-    }
 }

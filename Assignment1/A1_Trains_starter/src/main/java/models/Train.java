@@ -22,7 +22,6 @@ public class Train {
      * @return
      */
     public boolean hasWagons() {
-
         return firstWagon != null;
     }
 
@@ -66,14 +65,15 @@ public class Train {
     public int getNumberOfWagons() {
 
         Wagon searchWagon = firstWagon;
-        if (firstWagon == null){
-            return 0;
+        int counter = 0;
+        if (hasWagons()){
+             counter = 1;
+            while (searchWagon.hasNextWagon()) {
+                counter++;
+                searchWagon = searchWagon.getNextWagon();
+            }
         }
-        int counter = 1;
-        while (searchWagon.hasNextWagon()) {
-            counter++;
-            searchWagon = searchWagon.getNextWagon();
-        }
+
 
 
         return counter;
@@ -83,7 +83,7 @@ public class Train {
      * @return  the last wagon attached to the train
      */
     public Wagon getLastWagonAttached() {
-            if (firstWagon != null) {
+            if (hasWagons()) {
                 return firstWagon.getLastWagonAttached();
             }
             return null;
@@ -100,9 +100,10 @@ public class Train {
                 totalSeats += searchWagon.getNumberOfSeats();
                 searchWagon = (PassengerWagon) searchWagon.getNextWagon();
             }
-            return totalSeats;
+            return totalSeats + searchWagon.getNumberOfSeats();
+        } else {
+            return 0;
         }
-        throw new UnsupportedOperationException("Wagons aren't passenger wagons");
 
     }
 
@@ -119,9 +120,9 @@ public class Train {
                 totalWeight += searchWagon.getMaxWeight();
                 searchWagon = (FreightWagon) searchWagon.getNextWagon();
             }
-            return totalWeight;
+            return totalWeight + searchWagon.getMaxWeight();
         }
-        throw new UnsupportedOperationException("Wagons aren't freight wagons");
+       return 0;
 
     }
 
@@ -132,7 +133,9 @@ public class Train {
      *          (return null if the position is not valid for this train)
      */
     public Wagon findWagonAtPosition(int position) {
-        if (firstWagon != null){
+
+
+        if (hasWagons() && position >= 0 && firstWagon.getSequenceLength() > position){
             Wagon searchWagon = firstWagon;
             for (int i = 0; i < position; i++) {
                 if(!searchWagon.hasNextWagon()){
@@ -152,10 +155,10 @@ public class Train {
      *          (return null if no wagon was found with the given wagonId)
      */
     public Wagon findWagonById(int wagonId) {
-        if (firstWagon != null) {
+        if (hasWagons()) {
             Wagon searchWagon = firstWagon;
             while (searchWagon.hasNextWagon()) {
-                if (searchWagon.getId() == wagonId) {
+                if (searchWagon.getId() ==  wagonId) {
                     return searchWagon;
                 }
                 searchWagon = searchWagon.getNextWagon();
@@ -282,10 +285,28 @@ public class Train {
      * (No change if the train has no wagons or only one wagon)
      */
     public void reverse() {
-        if (getNumberOfWagons() >= 1 ){
-            firstWagon.reverseSequence();
+        if (hasWagons()){
+            setFirstWagon(firstWagon.reverseSequence());
         }
-        // TODO
+
+
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder trainString = new StringBuilder(this.engine.toString());
+
+        if (hasWagons()){
+            Wagon currentWagon = firstWagon;
+           while (currentWagon.hasNextWagon()){
+               trainString.append(currentWagon);
+               currentWagon = currentWagon.getNextWagon();
+           }
+        }
+
+        return String.format("%s with %d wagons from %s to %s\n" +
+                "Total number of seats: %d ", trainString, firstWagon.getSequenceLength(), origin, destination, getTotalNumberOfSeats());
 
     }
 

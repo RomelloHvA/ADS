@@ -21,4 +21,9 @@ public class Locomotive {
     public void setLocNumber(int locNumber) {
         this.locNumber = locNumber;
     }
+
+    @Override
+    public String toString() {
+        return String.format("[Loc-%d]", locNumber);
+    }
 }

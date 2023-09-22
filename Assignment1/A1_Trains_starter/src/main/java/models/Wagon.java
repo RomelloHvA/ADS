@@ -54,7 +54,7 @@ public abstract class Wagon {
      * @return  the last wagon
      */
     public Wagon getLastWagonAttached() {
-        if (nextWagon != null){
+        if (hasNextWagon()){
             Wagon searchWagon = nextWagon;
             while (searchWagon.hasNextWagon()) {
                 searchWagon = searchWagon.getNextWagon();
@@ -70,7 +70,7 @@ public abstract class Wagon {
      * including this wagon itself.
      */
     public int getSequenceLength() {
-        if (nextWagon != null){
+        if (hasNextWagon()){
             Wagon searchWagon = nextWagon;
             int length = 2;
             while (searchWagon.hasNextWagon()) {
@@ -94,7 +94,7 @@ public abstract class Wagon {
      *          or:   "%s has already been attached to %s"
      */
     public void attachTail(Wagon tail) {
-        if (nextWagon != null){
+        if (hasNextWagon()){
             throw new IllegalStateException(String.format("%s is already pulling %s", this, nextWagon));
         } else {
             if (tail.hasPreviousWagon()){
@@ -112,7 +112,7 @@ public abstract class Wagon {
      *          or <code>null</code> if it had no wagons attached to its tail.
      */
     public Wagon detachTail() {
-        if (nextWagon != null) {
+        if (hasNextWagon()) {
             Wagon tail = nextWagon;
             nextWagon = null;
             tail.previousWagon = null;
@@ -129,7 +129,7 @@ public abstract class Wagon {
      */
     public Wagon detachFront() {
 
-        if (previousWagon != null) {
+        if (hasPreviousWagon()) {
             Wagon front = previousWagon;
             previousWagon = null;
             front.nextWagon = null;
@@ -164,12 +164,12 @@ public abstract class Wagon {
     public void removeFromSequence() {
 
         //First wagon actions
-        if (previousWagon == null) {
+        if (!hasPreviousWagon()) {
             nextWagon.detachFront();
             nextWagon = null;
 
             // Middle wagon actions
-        } else if (nextWagon != null) {
+        } else if (hasNextWagon()) {
             Wagon nextToAttach = nextWagon;
             Wagon previousToAttach = previousWagon;
             detachFront();
@@ -193,11 +193,11 @@ public abstract class Wagon {
      */
     public Wagon reverseSequence() {
         // No action
-        if (nextWagon == null){
+        if (!hasNextWagon()){
             return null;
 
             // Middle of sequence reverse
-        } else if (previousWagon != null) {
+        } else if (hasPreviousWagon()) {
             Wagon wagonBeforeSequence = previousWagon;
             Wagon currentWagon = this;
 
@@ -253,4 +253,9 @@ public abstract class Wagon {
     }
 
     // TODO string representation of a Wagon
+
+    @Override
+    public String toString() {
+        return String.format("[Wagon-%d]", id);
+    }
 }

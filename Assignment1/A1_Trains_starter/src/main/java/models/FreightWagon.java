@@ -17,8 +17,5 @@ public class FreightWagon extends Wagon {
         this.maxWeight = maxWeight;
     }
 
-    @Override
-    public String toString() {
-        return "[Wagon-" + id + "]";
-    }
+
 }
