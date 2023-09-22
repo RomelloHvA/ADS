@@ -72,7 +72,7 @@ public abstract class Wagon {
     public int getSequenceLength() {
         if (hasNextWagon()){
             Wagon searchWagon = nextWagon;
-            int length = 2;
+            int length = 1;
             while (searchWagon.hasNextWagon()) {
                 searchWagon = searchWagon.getNextWagon();
                 length++;

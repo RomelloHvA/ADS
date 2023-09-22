@@ -184,6 +184,10 @@ public class Train {
      */
     public boolean canAttach(Wagon wagon) {
 
+        if (wagon == null){
+            return false;
+        }
+
         // Verify if firstwagon is empty, type match and engine capacity
         if (firstWagon != null
                 && wagon.getClass() == firstWagon.getClass()
@@ -214,23 +218,21 @@ public class Train {
      */
     public boolean attachToRear(Wagon wagon) {
 
-        if (wagon == null){
-            return false;
-        }
-
-        if (firstWagon != null && firstWagon.getClass() == wagon.getClass()
-                && engine.getMaxWagons() >= (firstWagon.getSequenceLength() + wagon.getSequenceLength())){
+        boolean succesfullAttach = false;
+        // Check if wagon can be attached
+        if (canAttach(wagon)){
                 wagon.detachFront();
-                wagon.reAttachTo(getLastWagonAttached());
-            return true;
 
-            // Can always be attached if no first wagon.
-        } else if (firstWagon == null && engine.getMaxWagons() > wagon.getSequenceLength()) {
-            wagon.detachFront();
-            setFirstWagon(wagon);
-            return true;
+            // If the train is not empty
+            if (getLastWagonAttached() != null){
+                wagon.reAttachTo(getLastWagonAttached());
+            } else {
+                setFirstWagon(wagon);
+            }
+            succesfullAttach = true;
         }
-        return false;
+
+        return succesfullAttach;
     }
 
     /**
@@ -243,17 +245,26 @@ public class Train {
      * @return  whether the insertion could be completed successfully
      */
     public boolean insertAtFront(Wagon wagon) {
+            boolean succesfullInsert = false;
 
-        if (firstWagon != null && firstWagon.getClass() == wagon.getClass()
-                && engine.getMaxWagons() >= (firstWagon.getSequenceLength() + wagon.getSequenceLength())){
+        if (canAttach(wagon)){
+                wagon.detachFront();
 
-            return true;
-        } else if (firstWagon == null && engine.getMaxWagons() >= wagon.getSequenceLength()) {
-            return true;
+
+            if (firstWagon == null){
+                setFirstWagon(wagon);
+            } else {
+                Wagon previousFirstWagon = firstWagon;
+                setFirstWagon(wagon);
+                attachToRear(previousFirstWagon);
+            }
+
+            succesfullInsert = true;
+
+
+
         }
-        // TODO
-
-        return false;   // replace by proper outcome
+        return succesfullInsert;
     }
 
     /**
