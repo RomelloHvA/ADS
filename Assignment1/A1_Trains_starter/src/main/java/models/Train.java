@@ -282,9 +282,32 @@ public class Train {
      * @return  whether the insertion could be completed successfully
      */
     public boolean insertAtPosition(int position, Wagon wagon) {
-        // TODO
+        boolean isInserted = false;
+        Wagon wagonAtposition = findWagonAtPosition(position);
 
-        return false;   // replace by proper outcome
+        if (position > getNumberOfWagons()){
+            return false;
+        }
+
+        //Check wagoncompatibility first and for empty wagons
+        if (canAttach(wagon)) {
+            wagon.detachFront();
+
+            //Empty train
+            if (wagonAtposition == null) {
+                insertAtFront(wagon);
+                isInserted = true;
+
+//            position is front of the train;
+            } else if (!wagonAtposition.hasPreviousWagon() && wagonAtposition == getLastWagonAttached() ) {
+                insertAtFront(wagon);
+                attachToRear(wagonAtposition);
+                isInserted = true;
+            }
+        }
+
+        System.out.println(this);
+        return isInserted;
     }
 
     /**
@@ -350,6 +373,7 @@ public class Train {
                trainString.append(currentWagon);
                currentWagon = currentWagon.getNextWagon();
            }
+           trainString.append(currentWagon);
         }
 
         return String.format("%s with %d wagons from %s to %s", trainString, wagonLength, origin, destination);
