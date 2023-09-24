@@ -25,6 +25,10 @@ public abstract class Wagon {
         return id;
     }
 
+    public int setId(int id) {
+        return id;
+    }
+
     public Wagon getNextWagon() {
         return nextWagon;
     }
@@ -33,9 +37,12 @@ public abstract class Wagon {
         return previousWagon;
     }
 
-    public void setNextWagon(Wagon next){nextWagon = next;}
-    public void setPreviousWagon(Wagon previous){previousWagon = previous;}
+    private void setNextWagon(Wagon next){nextWagon = next;}
 
+    public void setNextWagonForTest(Wagon next){nextWagon = next;}
+    private void setPreviousWagon(Wagon previous){previousWagon = previous;}
+
+    public void setPreviousWagonForTest(Wagon previous){previousWagon = previous;}
 
     /**
      * @return  whether this wagon has a wagon appended at the tail
@@ -70,8 +77,6 @@ public abstract class Wagon {
         }
 
         return searchWagon;
-
-
     }
 
     /**

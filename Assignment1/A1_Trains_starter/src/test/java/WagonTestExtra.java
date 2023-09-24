@@ -76,18 +76,18 @@ public class WagonTestExtra {
         passengerWagon3.attachTail(passengerWagon4);
         passengerWagon4.attachTail(passengerWagon5);
 
-        passengerWagon4.setNextWagon(passengerWagon2);
+        passengerWagon4.setNextWagonForTest(passengerWagon2);
 
 
         assertThrows(IllegalStateException.class, () -> passengerWagon2.reverseSequence());
 
-        passengerWagon4.setNextWagon(passengerWagon5);
-        passengerWagon2.setPreviousWagon(passengerWagon4);
+        passengerWagon4.setNextWagonForTest(passengerWagon5);
+        passengerWagon2.setPreviousWagonForTest(passengerWagon4);
 
         assertThrows(IllegalStateException.class, () -> passengerWagon2.reverseSequence());
 
-        passengerWagon2.setPreviousWagon(passengerWagon1);
-        passengerWagon1.setPreviousWagon(passengerWagon5);
+        passengerWagon2.setPreviousWagonForTest(passengerWagon1);
+        passengerWagon1.setPreviousWagonForTest(passengerWagon5);
 
 
         assertThrows(IllegalStateException.class, () -> passengerWagon2.reverseSequence());
@@ -104,12 +104,12 @@ public class WagonTestExtra {
         passengerWagon2.attachTail(passengerWagon3);
         passengerWagon3.attachTail(passengerWagon4);
 
-        passengerWagon1.setPreviousWagon(passengerWagon4);
-        passengerWagon4.setNextWagon(passengerWagon1);
+        passengerWagon1.setPreviousWagonForTest(passengerWagon4);
+        passengerWagon4.setNextWagonForTest(passengerWagon1);
 
         assertThrows(IllegalStateException.class, () -> passengerWagon1.getSequenceLength());
 
-        passengerWagon3.setPreviousWagon(passengerWagon4);
+        passengerWagon3.setPreviousWagonForTest(passengerWagon4);
 
         assertThrows(IllegalStateException.class, () -> passengerWagon1.getSequenceLength());
 
@@ -124,12 +124,12 @@ public class WagonTestExtra {
         passengerWagon2.attachTail(passengerWagon3);
         passengerWagon3.attachTail(passengerWagon4);
 
-        passengerWagon1.setPreviousWagon(passengerWagon4);
-        passengerWagon4.setNextWagon(passengerWagon1);
+        passengerWagon1.setPreviousWagonForTest(passengerWagon4);
+        passengerWagon4.setNextWagonForTest(passengerWagon1);
 
         assertThrows(IllegalStateException.class, () -> passengerWagon1.getLastWagonAttached());
 
-        passengerWagon3.setNextWagon(passengerWagon2);
+        passengerWagon3.setNextWagonForTest(passengerWagon2);
 
         assertThrows(IllegalStateException.class, () -> passengerWagon3.getLastWagonAttached());
 
@@ -144,13 +144,13 @@ public class WagonTestExtra {
         passengerWagon2.attachTail(passengerWagon3);
         passengerWagon3.attachTail(passengerWagon4);
 
-        passengerWagon1.setPreviousWagon(passengerWagon4);
-        passengerWagon4.setNextWagon(passengerWagon1);
+        passengerWagon1.setPreviousWagonForTest(passengerWagon4);
+        passengerWagon4.setNextWagonForTest(passengerWagon1);
 
         assertThrows(IllegalStateException.class, () -> passengerWagon1.reverseSequence());
 
-        passengerWagon3.setPreviousWagon(passengerWagon4);
-        passengerWagon4.setPreviousWagon(null);
+        passengerWagon3.setPreviousWagonForTest(passengerWagon4);
+        passengerWagon4.setPreviousWagonForTest(null);
 
         assertThrows(IllegalStateException.class, () -> passengerWagon3.reverseSequence());
 
