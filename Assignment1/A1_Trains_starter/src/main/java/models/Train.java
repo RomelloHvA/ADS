@@ -189,32 +189,32 @@ public class Train {
      */
     public boolean canAttach(Wagon wagon) {
 
-        if (wagon == null){
-            return false;
-        }
-
-        if (wagon == firstWagon){
+        if (wagon == null || wagon == firstWagon){
             return false;
         }
 
         if(firstWagon != null){
-            if (wagon instanceof PassengerWagon && !isPassengerTrain()){
-                return false;
-            } else if (wagon instanceof FreightWagon && !isFreightTrain()){
+            if (wagon instanceof PassengerWagon && !isPassengerTrain() || wagon instanceof FreightWagon && !isFreightTrain()){
                 return false;
             }
 
             if ((firstWagon.getSequenceLength() + wagon.getSequenceLength()) > engine.getMaxWagons()){
                 return false;
             }
-            return !isWagonPartOfTrain(wagon);
 
+            return !isWagonPartOfTrain(wagon);
         }
+
         return wagon.getSequenceLength() <= engine.getMaxWagons();
 
     }
 
 
+    /**
+     * Determines if the given wagon is part of the train already
+     * @param wagon the wagon to check can have a tail sequence of wagons attached to it
+     * @return true or false whether the wagon is part of the train already
+     */
     private boolean isWagonPartOfTrain(Wagon wagon) {
         Wagon indexWagon = firstWagon;
         Wagon indexWagon2 = wagon;
@@ -252,6 +252,7 @@ public class Train {
 
         wagon.detachFront();
 
+        //if the train has no wagons yet, it should set it as the first wagon
         if (firstWagon == null){
             setFirstWagon(wagon);
         } else {
@@ -280,6 +281,7 @@ public class Train {
 
         setFirstWagon(wagon);
 
+        //if the train has wagons already, it should attach the previous first wagon to the rear of the new first wagon
         if (previousFirstWagon != null){
             attachToRear(previousFirstWagon);
         }
@@ -313,14 +315,17 @@ public class Train {
             return false;
         }
 
+        //if the position is 0, it should insert it at the front
         if (position == 0){
             return insertAtFront(wagon);
         }
 
+        //if the position is bigger or equal to the amount of wagons the train has, it should insert it at the rear
         if (position >= getNumberOfWagons() ){
             return attachToRear(wagon);
         }
 
+        //if the position is valid, it should insert it at the given position
         if (indexWagon != null){
             Wagon previousWagon = indexWagon.getPreviousWagon();
             wagon.reAttachTo(previousWagon);
@@ -347,14 +352,12 @@ public class Train {
     public boolean moveOneWagon(int wagonId, Train toTrain) {
         Wagon wagonToMove = findWagonById(wagonId);
 
-        if (wagonToMove == null){
+        if (wagonToMove == null || !toTrain.canAttach(wagonToMove)){
             return false;
         }
 
-        if (!toTrain.canAttach(wagonToMove)){
-            return false;
-        }
 
+        //if the wagonToMove is the firstwagon we need to change firstwagon to the next wagon
         if (wagonToMove == firstWagon){
             firstWagon = wagonToMove.getNextWagon();
         }
@@ -378,13 +381,11 @@ public class Train {
     public boolean splitAtPosition(int position, Train toTrain) {
         Wagon wagonsToMove = findWagonAtPosition(position);
 
-        if (wagonsToMove == null){
-            return false;
-        }
-        if (!toTrain.canAttach(wagonsToMove)){
+        if (wagonsToMove == null || !toTrain.canAttach(wagonsToMove)){
             return false;
         }
 
+        //if the wagonsToMove is the firstwagon fromt this train we need to change firstwagon to null
         if(wagonsToMove.detachFront() == null){
             firstWagon = null;
         }
@@ -429,6 +430,5 @@ public class Train {
 
     }
 
-    // TODO string representation of a train
 }
 

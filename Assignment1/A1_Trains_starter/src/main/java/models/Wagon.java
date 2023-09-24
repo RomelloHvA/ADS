@@ -1,7 +1,10 @@
 package models;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public abstract class Wagon {
-    protected int id;               // some unique ID of a Wagon
+    private final int id;           // some unique ID of a Wagon
     private Wagon nextWagon;        // another wagon that is appended at the tail of this wagon
                                     // a.k.a. the successor of this wagon in a sequence
                                     // set to null if no successor is connected
@@ -58,6 +61,8 @@ public abstract class Wagon {
             return this;
         }
 
+        checkSequenceForInvariants();
+
         Wagon searchWagon = nextWagon;
 
         while (searchWagon.hasNextWagon()) {
@@ -78,8 +83,11 @@ public abstract class Wagon {
             return 1;
         }
 
+        checkSequenceForInvariants();
+
         Wagon searchWagon = nextWagon;
         int length = 2;
+
 
         while (searchWagon.hasNextWagon()) {
             searchWagon = searchWagon.getNextWagon();
@@ -128,7 +136,7 @@ public abstract class Wagon {
 
         // Check if the next wagon is actually pulling this wagon
         // This is to prevent a wagon from detaching a wagon that is not pulling
-        if (nextWagon.previousWagon != this ){
+        if (nextWagon.getPreviousWagon() != this ){
             throw new IllegalStateException(String.format("%s is attached to %s but %s is not pulling %s", this, nextWagon, nextWagon, this));
         }
 
@@ -192,22 +200,15 @@ public abstract class Wagon {
 
         //First wagon actions
         if (!hasPreviousWagon()) {
-            nextWagon.detachFront();
-            nextWagon = null;
+            detachTail();
 
             // Middle wagon actions
         } else if (hasNextWagon()) {
-            Wagon next = nextWagon;
-            Wagon previous = previousWagon;
-            detachFront();
-            detachTail();
-            previous.attachTail(next);
+            nextWagon.reAttachTo(previousWagon);
 
             // Last wagon actions
         } else {
-            previousWagon.setNextWagon(null);
-            previousWagon = null;
-
+            detachFront();
         }
 
     }
@@ -225,6 +226,9 @@ public abstract class Wagon {
 
             // Middle of sequence reverse
         } else if (hasPreviousWagon()) {
+
+            checkSequenceForInvariants();
+
             Wagon lastWagon = getLastWagonAttached();
             Wagon thisNextWagon = nextWagon;
             Wagon thisPreviousWagon = previousWagon;
@@ -244,24 +248,35 @@ public abstract class Wagon {
 
         // First in sequence reverse.
         } else {
+
+            checkSequenceForInvariants();
+
             return reverseSequenceFromLast(getLastWagonAttached());
         }
     }
+
+    /**
+     * Reverses the order in the sequence of wagons from the given Wagon until its final successor.
+     * @param lastWagon the last wagon of the sequence to reverse
+     * @return the new start Wagon of the reversed sequence (with is the former last Wagon of the original sequence)
+     */
 
     private Wagon reverseSequenceFromLast(Wagon lastWagon){
         Wagon editWagon = lastWagon;
         Wagon editNext;
         Wagon editPrevious;
 
+        checkSequenceForInvariants();
+
         while (editWagon != null) {
 
-            editNext = editWagon.nextWagon;
-            editPrevious = editWagon.previousWagon;
+            editNext = editWagon.getNextWagon();
+            editPrevious = editWagon.getPreviousWagon();
 
             editWagon.setNextWagon(editPrevious);
             editWagon.setPreviousWagon(editNext);
 
-            editWagon = editWagon.nextWagon;
+            editWagon = editWagon.getNextWagon();
 
         }
 
@@ -269,7 +284,37 @@ public abstract class Wagon {
 
     }
 
-    // TODO string representation of a Wagon
+    /**
+     * Checks if the sequence of wagons contains a loop that is caused by invariant violations.
+     */
+
+    private void checkSequenceForInvariants(){
+        Wagon checkWagon = this;
+        Set<Wagon> visited = new HashSet<>();
+
+        // Check the sequence forwards
+        while (checkWagon.hasNextWagon()){
+            if (!visited.add(checkWagon) ){
+                throw new IllegalStateException(String.format("Wagon sequence contains a loop, caused near %s", checkWagon));
+            }
+
+            checkWagon = checkWagon.getNextWagon();
+        }
+
+        visited.clear();
+
+        // Check the sequence backwards
+        while (checkWagon.hasPreviousWagon()){
+            if (!visited.add(checkWagon) ){
+                throw new IllegalStateException(String.format("Wagon sequence contains a loop, caused near %s", checkWagon));
+            }
+
+            checkWagon = checkWagon.getPreviousWagon();
+        }
+
+    }
+
+
 
     @Override
     public String toString() {
