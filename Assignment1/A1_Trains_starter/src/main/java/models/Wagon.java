@@ -271,8 +271,6 @@ public abstract class Wagon {
         Wagon editNext;
         Wagon editPrevious;
 
-        checkSequenceForInvariants();
-
         while (editWagon != null) {
 
             editNext = editWagon.getNextWagon();
