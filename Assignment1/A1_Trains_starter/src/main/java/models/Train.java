@@ -69,15 +69,7 @@ public class Train {
             return 0;
         }
 
-        Wagon searchWagon = firstWagon;
-        int counter = 1;
-
-        while (searchWagon.hasNextWagon()) {
-            counter++;
-            searchWagon = searchWagon.getNextWagon();
-        }
-
-        return counter;
+        return firstWagon.getSequenceLength();
     }
 
     /**
@@ -208,7 +200,6 @@ public class Train {
         }
 
         return wagon.getSequenceLength() <= engine.getMaxWagons();
-
     }
 
 
