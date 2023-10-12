@@ -39,19 +39,18 @@ public class Detection {
         Detection newDetection = null;
 
         // TODO convert the information in the textLine into a new Detection instance
-        newDetection.setCity(textLine.split(",")[1]);
-        newDetection.setDateTime(LocalDateTime.parse(textLine.split(",")[2]));
+        String newCity = (textLine.split(",")[1].trim());
+        LocalDateTime newDate = (LocalDateTime.parse(textLine.split(",")[2].trim()));
 
         //  use the cars.indexOf to find the car that is associated with the licensePlate of the detection
-        Car car = cars.indexOf(textLine.split(",")[0]);
-
+        Car newCar = cars.stream().filter(car -> car.getLicensePlate().equals(textLine.split(",")[0].trim())).findFirst().orElse(null);
         //  if no car can be found a new Car shall be instantiated and added to the list and associated with the detection
-        if (car == null) {
-            car = new Car(textLine.split(",")[0]);
-            cars.add(car);
+        if (newCar == null) {
+            newCar = new Car(textLine.split(",")[0].trim());
+            cars.add(newCar);
         }
 
-        newDetection.setCar(car);
+        newDetection = new Detection(newCar, newCity, newDate);
 
         return newDetection;
     }
@@ -75,15 +74,6 @@ public class Detection {
 
     public Car getCar() {
         return car;
-    }
-    public void setCar(Car car) {
-        this.car = car;
-    }
-    public void setCity(String city) {
-        this.city = city;
-    }
-    public void setDateTime (LocalDateTime dateTime) {
-        this.dateTime = dateTime;
     }
 
     public String getCity() {

@@ -15,7 +15,9 @@ public class TrafficTracker {
     private OrderedList<Violation> violations;      // the accumulation of all offences by car and by city
 
     public TrafficTracker() {
-        // TODO initialize cars with an empty ordered list which sorts items by licensePlate.
+        cars = new OrderedArrayList<Car>(Car::compareByLicensePlate);
+        violations = new OrderedArrayList<Violation>(Violation::compareByLicensePlateAndCity);
+
         //  initalize violations with an empty ordered list which sorts items by car and city.
         //  Use your generic implementation class OrderedArrayList
 
@@ -67,6 +69,7 @@ public class TrafficTracker {
             // the file is a folder (a.k.a. directory)
             //  retrieve a list of all files and sub folders in this directory
             File[] filesInDirectory = Objects.requireNonNullElse(file.listFiles(), new File[0]);
+
 
             // TODO recursively process all files and sub folders from the filesInDirectory list.
             //  also track the total number of offences found

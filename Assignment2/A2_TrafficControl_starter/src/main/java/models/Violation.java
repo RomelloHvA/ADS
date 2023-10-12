@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Comparator;
+
 public class Violation {
     private final Car car;
     private final String city;
@@ -13,9 +15,12 @@ public class Violation {
 
     public static int compareByLicensePlateAndCity(Violation v1, Violation v2) {
         // TODO compute the sort order of v1 vs v2 as per conventions of Comparator<Violation>
-        Comparator<Violation> violationComparator = Comparator.comparing(Violation::getCar).thenComparing(Violation::getCity);
+        int result = v1.getCar().getLicensePlate().compareTo(v2.getCar().getLicensePlate());
+        if(result == 0){
+            result = v1.getCity().compareTo(v2.getCity());
+        }
 
-        return violationComparator;   // replace by a proper outcome
+        return result;   // replace by a proper outcome
     }
 
 
@@ -61,6 +66,6 @@ public class Violation {
     @Override
     public String toString() {
 
-        return String.format("%s,%s,%d", car.getLicencePlate(), city, offencesCount);   // replace by a proper outcome
+        return String.format("%s,%s,%d", car.getLicensePlate(), city, offencesCount);   // replace by a proper outcome
     }
 }

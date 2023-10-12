@@ -139,11 +139,31 @@ public class OrderedArrayList<E>
     public int indexOfByIterativeBinarySearch(E searchItem) {
 
         // TODO implement an iterative binary search on the sorted section of the arrayList, 0 <= index < nSorted
+
+        int from = 0;
+        int to = nSorted - 1;
+
+        while (from <= to) {
+
+            int middle = (from + to) / 2;
+
+            if (sortOrder.compare(searchItem, get(middle)) == 0) {
+                return middle;
+            } else if (sortOrder.compare(searchItem, get(middle)) < 0) {
+                to = middle - 1;
+            } else {
+                from = middle + 1;
+            }
+        }
         //   to find the position of an item that matches searchItem (this.sortOrder comparator yields a 0 result)
 
 
         // TODO if no match was found, attempt a linear search of searchItem in the section nSorted <= index < size()
-
+        for (int i = nSorted; i < size(); i++) {
+            if (sortOrder.compare(searchItem, get(i)) == 0) {
+                return i;
+            }
+        }
 
         return -1;  // nothing was found ???
     }
@@ -159,6 +179,17 @@ public class OrderedArrayList<E>
      * @return the position index of the found item in the arrayList, or -1 if no item matches the search item.
      */
     public int indexOfByRecursiveBinarySearch(E searchItem) {
+        int result = indexOfByRecursiveBinarySearchHelper(searchItem, 0, nSorted - 1);
+
+        if (result != -1) {
+            return result;
+        }
+
+        for (int i = nSorted; i < size(); i++) {
+            if (sortOrder.compare(searchItem, get(i)) == 0) {
+                return i;
+            }
+        }
 
         // TODO implement a recursive binary search on the sorted section of the arrayList, 0 <= index < nSorted
         //   to find the position of an item that matches searchItem (this.sortOrder comparator yields a 0 result)
@@ -169,6 +200,23 @@ public class OrderedArrayList<E>
 
         return -1;  // nothing was found ???
     }
+
+    private int indexOfByRecursiveBinarySearchHelper(E searchItem, int from, int to){
+        if(from > to) {
+            return -1;
+        }
+        int midIndex = (from + to) / 2;
+
+        if(sortOrder.compare(searchItem, get(midIndex)) == 0) {
+            return midIndex;
+        }else if (sortOrder.compare(searchItem, get(midIndex)) < 0) {
+            return indexOfByRecursiveBinarySearchHelper(searchItem, from, midIndex - 1);
+        } else {
+            return indexOfByRecursiveBinarySearchHelper(searchItem, midIndex + 1, to);
+        }
+    }
+
+
 
 
     /**
@@ -194,8 +242,7 @@ public class OrderedArrayList<E>
         } else {
             // TODO retrieve the matched item and
             //  replace the matched item in the list with the merger of the matched item and the newItem
-
-
+            set(matchedItemIndex ,merger.apply(newItem, get(matchedItemIndex)));
             return false;
         }
     }
@@ -212,7 +259,9 @@ public class OrderedArrayList<E>
 
         // TODO loop over all items and use the mapper
         //  to calculate and accumulate the contribution of each item
-
+        for (E item : this) {
+            sum += mapper.apply(item);
+        }
 
         return sum;
     }

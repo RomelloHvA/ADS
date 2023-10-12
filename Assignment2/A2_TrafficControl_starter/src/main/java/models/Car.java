@@ -117,6 +117,10 @@ public class Car implements Comparable<Car> {
         return this.licensePlate.compareTo(other.licensePlate);
     }
 
+    public int compareByLicensePlate(Car other) {
+        // cars are uniquely defined by their license plate
+        return this.licensePlate.compareTo(other.licensePlate);
+    }
     @Override
     public String toString() {
 
