@@ -13,9 +13,9 @@ public class Violation {
 
     public static int compareByLicensePlateAndCity(Violation v1, Violation v2) {
         // TODO compute the sort order of v1 vs v2 as per conventions of Comparator<Violation>
+        Comparator<Violation> violationComparator = Comparator.comparing(Violation::getCar).thenComparing(Violation::getCity);
 
-
-        return 0;   // replace by a proper outcome
+        return violationComparator;   // replace by a proper outcome
     }
 
 
@@ -61,6 +61,6 @@ public class Violation {
     @Override
     public String toString() {
 
-        return "TODO:Violation.toString";   // replace by a proper outcome
+        return String.format("%s,%s,%d", car.getLicencePlate(), city, offencesCount);   // replace by a proper outcome
     }
 }

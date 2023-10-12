@@ -39,9 +39,19 @@ public class Detection {
         Detection newDetection = null;
 
         // TODO convert the information in the textLine into a new Detection instance
-        //  use the cars.indexOf to find the car that is associated with the licensePlate of the detection
-        //  if no car can be found a new Car shall be instantiated and added to the list and associated with the detection
+        newDetection.setCity(textLine.split(",")[1]);
+        newDetection.setDateTime(LocalDateTime.parse(textLine.split(",")[2]));
 
+        //  use the cars.indexOf to find the car that is associated with the licensePlate of the detection
+        Car car = cars.indexOf(textLine.split(",")[0]);
+
+        //  if no car can be found a new Car shall be instantiated and added to the list and associated with the detection
+        if (car == null) {
+            car = new Car(textLine.split(",")[0]);
+            cars.add(car);
+        }
+
+        newDetection.setCar(car);
 
         return newDetection;
     }
@@ -55,13 +65,25 @@ public class Detection {
      */
     public Violation validatePurple() {
         // TODO validate that diesel trucks and diesel coaches have an emission category of 6 or above
-
+        if (car.getFuelType() == FuelType.Diesel && (car.getCarType() == CarType.Coach || car.getCarType() == CarType.Truck)
+        && car.getEmissionCategory() < 6) {
+            return new Violation(car, city);
+        }
 
         return null;
     }
 
     public Car getCar() {
         return car;
+    }
+    public void setCar(Car car) {
+        this.car = car;
+    }
+    public void setCity(String city) {
+        this.city = city;
+    }
+    public void setDateTime (LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
     public String getCity() {
@@ -77,7 +99,7 @@ public class Detection {
     public String toString() {
         // TODO represent the detection in the format: licensePlate/city/dateTime
 
-        return "TODO:Detection.toString";       // replace by a proper outcome
+        return String.format("%s/%s/%s", car.getLicensePlate(), city, dateTime.toString());       // replace by a proper outcome
     }
 
 }

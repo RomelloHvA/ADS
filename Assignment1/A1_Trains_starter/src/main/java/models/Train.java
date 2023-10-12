@@ -255,6 +255,8 @@ public class Train {
         return true;
     }
 
+
+
     /**
      * Tries to insert the given sequence of wagons at the front of the train
      * (the front is at position one, before the current first wagon, if any)
