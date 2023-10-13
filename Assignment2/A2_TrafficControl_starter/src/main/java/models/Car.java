@@ -51,6 +51,7 @@ public class Car implements Comparable<Car> {
      *          or null if the textLine is corrupt, incomplete or empty
      */
     public static Car fromLine(String textLine) {
+
         Car newCar = null;
 
         // extract the comma-separated fields from the textLine

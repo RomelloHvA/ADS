@@ -14,22 +14,22 @@ public class Violation {
     }
 
     public static int compareByLicensePlateAndCity(Violation v1, Violation v2) {
-        // TODO compute the sort order of v1 vs v2 as per conventions of Comparator<Violation>
-        int result = v1.getCar().getLicensePlate().compareTo(v2.getCar().getLicensePlate());
+        if (v1 == null || v2 == null) throw new IllegalArgumentException("Violation cannot be null");
+
+        int result = v1.compareByCar(v2);
         if(result == 0){
-            result = v1.getCity().compareTo(v2.getCity());
+            result = v1.compareByCity(v2);
         }
 
         return result;   // replace by a proper outcome
     }
 
     public int compareByCity(Violation other) {
-        // TODO compute the sort order of this vs other as per conventions of Comparator<Violation>
         return this.getCity().compareTo(other.getCity());   // replace by a proper outcome
     }
 
     public int compareByCar(Violation other) {
-        return this.getCar().getLicensePlate().compareTo(other.getCar().getLicensePlate());
+        return this.car.getLicensePlate().compareTo(other.getCar().getLicensePlate());
     }
 
 
@@ -43,6 +43,8 @@ public class Violation {
      * @return  a new violation with the accumulated offencesCount and matching identifying attributes.
      */
     public Violation combineOffencesCounts(Violation other) {
+        if (other == null) return this;  // nothing to combine with
+
         Violation combinedViolation = new Violation(
                 // nullify the car attribute iff this.car does not match other.car
                 this.car != null && this.car.equals(other.car) ? this.car : null,
@@ -71,10 +73,8 @@ public class Violation {
         this.offencesCount = offencesCount;
     }
 
-    // TODO represent the violation in the format: licensePlate/city/offencesCount
     @Override
     public String toString() {
-
-        return String.format("%s,%s,%d", car.getLicensePlate(), city, offencesCount);   // replace by a proper outcome
+        return String.format("%s/%s/%d", (car == null ? "null" : car.getLicensePlate()), city, offencesCount);   // replace by a proper outcome
     }
 }

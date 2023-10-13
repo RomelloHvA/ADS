@@ -36,23 +36,29 @@ public class Detection {
      * or null if the textLine is corrupt or incomplete
      */
     public static Detection fromLine(String textLine, List<Car> cars) {
+
         Detection newDetection = null;
+        try {
+            String newCity = (textLine.split(",")[1].trim());
 
-        // TODO convert the information in the textLine into a new Detection instance
-        String newCity = (textLine.split(",")[1].trim());
-        LocalDateTime newDate = (LocalDateTime.parse(textLine.split(",")[2].trim()));
+            LocalDateTime newDate = (LocalDateTime.parse(textLine.split(",")[2].trim()));
 
-        //  use the cars.indexOf to find the car that is associated with the licensePlate of the detection
-        Car newCar = cars.stream().filter(car -> car.getLicensePlate().equals(textLine.split(",")[0].trim())).findFirst().orElse(null);
-        //  if no car can be found a new Car shall be instantiated and added to the list and associated with the detection
-        if (newCar == null) {
-            newCar = new Car(textLine.split(",")[0].trim());
-            cars.add(newCar);
+            //  use the cars.indexOf to find the car that is associated with the licensePlate of the detection
+            Car newCar = cars.stream().filter(car -> car.getLicensePlate().equals(textLine.split(",")[0].trim())).findFirst().orElse(null);
+            //  if no car can be found a new Car shall be instantiated and added to the list and associated with the detection
+            if (newCar == null) {
+                newCar = new Car(textLine.split(",")[0].trim());
+                cars.add(newCar);
+            }
+
+            newDetection = new Detection(newCar, newCity, newDate);
+            return newDetection;
+
+        } catch (Exception e) {
+            System.out.printf("Could not parse Detection specification in text line '%s'\n", textLine);
+            System.out.println(e.getMessage());
+            return null;
         }
-
-        newDetection = new Detection(newCar, newCity, newDate);
-
-        return newDetection;
     }
 
     /**
@@ -63,7 +69,7 @@ public class Detection {
      *          null if no offence was found.
      */
     public Violation validatePurple() {
-        // TODO validate that diesel trucks and diesel coaches have an emission category of 6 or above
+
         if (car.getFuelType() == FuelType.Diesel && (car.getCarType() == CarType.Coach || car.getCarType() == CarType.Truck)
         && car.getEmissionCategory() < 6) {
             return new Violation(car, city);

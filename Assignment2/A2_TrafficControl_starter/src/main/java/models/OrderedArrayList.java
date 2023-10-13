@@ -44,12 +44,6 @@ public class OrderedArrayList<E>
         this.nSorted = this.size();
     }
 
-    // TODO override the ArrayList.add(index, item), ArrayList.remove(index) and Collection.remove(object) methods
-    //  such that they both meet the ArrayList contract of these methods (see ArrayList JavaDoc)
-    //  and sustain the representation invariant of OrderedArrayList
-    //  (hint: only change nSorted as required to guarantee the representation invariant,
-    //   do not invoke a sort or reorder items otherwise differently than is specified by the ArrayList contract)
-
     /**
      * Method for adding items to an arraylist. This checks if the index in inside the number of sorted items.
      * If it is nSorted gets updated. This means it is added to the sorted items. If the index lies outside of nSorted
@@ -61,8 +55,12 @@ public class OrderedArrayList<E>
      */
     @Override
     public void add(int index, E item) {
+        if(index > size()){
+            index = size();
+        }
+
         if (index <= nSorted) {
-            nSorted++;
+            nSorted = index;
         }
         super.add(index, item);
     }
@@ -138,34 +136,34 @@ public class OrderedArrayList<E>
      */
     public int indexOfByIterativeBinarySearch(E searchItem) {
 
-        // TODO implement an iterative binary search on the sorted section of the arrayList, 0 <= index < nSorted
+        if (searchItem == null) {
+            return -1;
+        }
 
         int from = 0;
         int to = nSorted - 1;
 
         while (from <= to) {
 
-            int middle = (from + to) / 2;
+            int middle = (int) Math.ceil(((from + to) / 2.0));
+            int compareResult = sortOrder.compare(searchItem, get(middle));
 
-            if (sortOrder.compare(searchItem, get(middle)) == 0) {
+            if (compareResult == 0) {
                 return middle;
-            } else if (sortOrder.compare(searchItem, get(middle)) < 0) {
+            } else if (compareResult < 0) {
                 to = middle - 1;
             } else {
                 from = middle + 1;
             }
         }
-        //   to find the position of an item that matches searchItem (this.sortOrder comparator yields a 0 result)
 
-
-        // TODO if no match was found, attempt a linear search of searchItem in the section nSorted <= index < size()
         for (int i = nSorted; i < size(); i++) {
             if (sortOrder.compare(searchItem, get(i)) == 0) {
                 return i;
             }
         }
 
-        return -1;  // nothing was found ???
+        return -1; // nothing was found
     }
 
     /**
@@ -191,13 +189,6 @@ public class OrderedArrayList<E>
             }
         }
 
-        // TODO implement a recursive binary search on the sorted section of the arrayList, 0 <= index < nSorted
-        //   to find the position of an item that matches searchItem (this.sortOrder comparator yields a 0 result)
-
-
-        // TODO if no match was found, attempt a linear search of searchItem in the section nSorted <= index < size()
-
-
         return -1;  // nothing was found ???
     }
 
@@ -205,11 +196,13 @@ public class OrderedArrayList<E>
         if(from > to) {
             return -1;
         }
-        int midIndex = (from + to) / 2;
 
-        if(sortOrder.compare(searchItem, get(midIndex)) == 0) {
+        int midIndex = (int) Math.ceil((from + to) / 2.0);
+        int compareResult = sortOrder.compare(searchItem, get(midIndex));
+
+        if(compareResult == 0) {
             return midIndex;
-        }else if (sortOrder.compare(searchItem, get(midIndex)) < 0) {
+        }else if (compareResult < 0) {
             return indexOfByRecursiveBinarySearchHelper(searchItem, from, midIndex - 1);
         } else {
             return indexOfByRecursiveBinarySearchHelper(searchItem, midIndex + 1, to);
@@ -240,9 +233,10 @@ public class OrderedArrayList<E>
             this.add(newItem);
             return true;
         } else {
-            // TODO retrieve the matched item and
-            //  replace the matched item in the list with the merger of the matched item and the newItem
-            set(matchedItemIndex ,merger.apply(newItem, get(matchedItemIndex)));
+            E item = get(matchedItemIndex);
+            E mergedItem = merger.apply(item, newItem);
+            set(matchedItemIndex , mergedItem);
+
             return false;
         }
     }
@@ -257,8 +251,6 @@ public class OrderedArrayList<E>
     public double aggregate(Function<E, Double> mapper) {
         double sum = 0.0;
 
-        // TODO loop over all items and use the mapper
-        //  to calculate and accumulate the contribution of each item
         for (E item : this) {
             sum += mapper.apply(item);
         }
