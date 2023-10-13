@@ -134,7 +134,7 @@ public class Car implements Comparable<Car> {
         if (!(o instanceof Car)) return false;
         Car car = (Car)o;
         // cars are uniquely defined by their license plate
-        return licensePlate.equals(car.licensePlate);
+        return licensePlate.equals(car.getLicensePlate());
     }
 
     @Override

@@ -72,8 +72,13 @@ public class TrafficTracker {
 
 
             // TODO recursively process all files and sub folders from the filesInDirectory list.
-            //  also track the total number of offences found
 
+            filesInDirectory = Arrays.stream(filesInDirectory).filter(f -> f.getName().endsWith(TRAFFIC_FILE_EXTENSION)).toArray(File[]::new);
+            for (File f : filesInDirectory) {
+                totalNumberOfOffences += this.mergeDetectionsFromVaultRecursively(f);
+            }
+
+            //  also track the total number of offences found
 
 
         } else if (file.getName().matches(TRAFFIC_FILE_PATTERN)) {
@@ -101,7 +106,7 @@ public class TrafficTracker {
         // TODO import all detections from the specified file into the newDetections list
         //  using the importItemsFromFile helper method and the Detection.fromLine parser.
 
-
+        importItemsFromFile(newDetections, file, line -> Detection.fromLine(line, this.cars));
 
         System.out.printf("Imported %d detections from %s.\n", newDetections.size(), file.getPath());
 
@@ -111,6 +116,13 @@ public class TrafficTracker {
         //  merge any resulting offences into this.violations, accumulating offences per car and per city
         //  also keep track of the totalNumberOfOffences for reporting
 
+        for (Detection detection: newDetections) {
+            Violation violation = detection.validatePurple();
+            if (violation != null) {
+                totalNumberOfOffences++;
+                this.violations.merge(violation, Violation::combineOffencesCounts);
+            }
+        }
 
 
 
@@ -128,7 +140,17 @@ public class TrafficTracker {
                 // TODO provide a calculator function for the specified fine scheme
                 //  of €25 per truck-offence and €35 per coach-offence
 
-                null  // replace this reference
+                violation -> {
+                    double fine = 0;
+                    if (violation.getCar().getCarType() == Car.CarType.Truck) {
+                        fine = 25;
+                    } else if (violation.getCar().getCarType() == Car.CarType.Coach) {
+                        fine = 35;
+                    }
+                    return fine * violation.getOffencesCount();
+                }
+
+                  // replace this reference
         );
     }
 
@@ -142,11 +164,18 @@ public class TrafficTracker {
 
         // TODO merge all violations from this.violations into a new OrderedArrayList
         //   which orders and aggregates violations by city
+
+        OrderedArrayList<Violation> violationsByCar= new OrderedArrayList<>(Violation::compareByCar);
+
         // TODO sort the new list by decreasing offencesCount.
+
+        violationsByCar.sort(Comparator.comparing(Violation::getOffencesCount).reversed());
         // TODO use .subList to return only the topNumber of violations from the sorted list
+
+        violationsByCar.subList(0, topNumber);
         //  (You may want to prepare/reuse a local private method for all this)
 
-        return null;  // replace this reference
+        return violationsByCar;  // replace this reference
     }
 
     /**
@@ -158,12 +187,20 @@ public class TrafficTracker {
     public List<Violation> topViolationsByCity(int topNumber) {
 
         // TODO merge all violations from this.violations into a new OrderedArrayList
+
+        OrderedArrayList<Violation> violationsByCity= new OrderedArrayList<>(Violation::compareByCity);
+
         //   which orders and aggregates violations by Car
         // TODO sort the new list by decreasing offencesCount.
+
+        violationsByCity.sort(Comparator.comparing(Violation::getOffencesCount).reversed());
+
         // TODO use .subList to return only the topNumber of violations from the sorted list
+
+        violationsByCity.subList(0, topNumber);
         //  (You may want to prepare/reuse a local private method for all this)
 
-        return null;  // replace this reference
+        return violationsByCity;  // replace this reference
     }
 
 
@@ -188,11 +225,13 @@ public class TrafficTracker {
             numberOfLines++;
 
             // TODO convert the line to an instance of E
-
+            E item = converter.apply(line);
 
 
             // TODO add a successfully converted item to the list of items
-
+            if (item != null) {
+                items.add(item);
+            }
 
         }
 

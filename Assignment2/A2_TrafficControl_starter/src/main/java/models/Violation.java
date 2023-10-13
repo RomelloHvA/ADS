@@ -23,6 +23,15 @@ public class Violation {
         return result;   // replace by a proper outcome
     }
 
+    public int compareByCity(Violation other) {
+        // TODO compute the sort order of this vs other as per conventions of Comparator<Violation>
+        return this.getCity().compareTo(other.getCity());   // replace by a proper outcome
+    }
+
+    public int compareByCar(Violation other) {
+        return this.getCar().getLicensePlate().compareTo(other.getCar().getLicensePlate());
+    }
+
 
 
     /**
