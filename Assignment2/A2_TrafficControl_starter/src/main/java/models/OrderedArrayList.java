@@ -51,7 +51,6 @@ public class OrderedArrayList<E>
      *
      * @param index index at which the specified element is to be inserted
      * @param item  element to be inserted
-     * @author Romello ten Broeke
      */
     @Override
     public void add(int index, E item) {
@@ -70,7 +69,6 @@ public class OrderedArrayList<E>
      * If it is not it simply removes it.
      * @param index the index of the element to be removed
      * @return the object that was removed.
-     * @author Romello ten Broeke
      */
     @Override
     public E remove(int index) {
