@@ -141,45 +141,43 @@ public class TrafficTracker {
 
     /**
      * Prepares a list of topNumber of violations that show the highest offencesCount
-     * when this.violations are aggregated by car across all cities.
+     * when this.violations are aggregated by car across by car
      * @param topNumber     the requested top number of violations in the result list
      * @return              a list of topNum items that provides the top aggregated violations
      */
     public List<Violation> topViolationsByCar(int topNumber) {
-
-        OrderedArrayList<Violation> violationsByCar = new OrderedArrayList<>(Violation::compareByCar);
-
-        for (Violation violation: violations) {
-            violationsByCar.merge(violation, Violation::combineOffencesCounts);
-        }
-
-        violationsByCar.sort(Comparator.comparing(Violation::getOffencesCount).reversed());
-
-        List<Violation> topNumbersList = violationsByCar.subList(0, topNumber);
-        //  (You may want to prepare/reuse a local private method for all this)
-
-        return topNumbersList;  // replace this reference
+        Comparator<Violation> comparatorByCar = Comparator.comparing(Violation::getCar);
+        return getTopViolations(violations,comparatorByCar, topNumber);
     }
 
     /**
      * Prepares a list of topNumber of violations that show the highest offencesCount
-     * when this.violations are aggregated by city across all cars.
+     * when this.violations are aggregated by city across by city
      * @param topNumber     the requested top number of violations in the result list
      * @return              a list of topNum items that provides the top aggregated violations
      */
     public List<Violation> topViolationsByCity(int topNumber) {
+        Comparator<Violation> comparatorByCity = Comparator.comparing(Violation::getCity);
+        return getTopViolations(violations, comparatorByCity, topNumber);
+    }
 
-        OrderedArrayList<Violation> violationsByCity = new OrderedArrayList<>(Violation::compareByCity);
+    /**
+     * Helper method for returning a list of violations that meet certain given criteria.
+     * @param violations all the violations
+     * @param comparator what the compare criteria is, e.g. city or car
+     * @param topNumber the limit of which number you want.
+     * @return
+     */
 
-        for (Violation violation: violations) {
-            violationsByCity.merge(violation, Violation::combineOffencesCounts);
+    private List<Violation> getTopViolations(List<Violation> violations, Comparator<Violation> comparator, int topNumber) {
+
+        OrderedArrayList<Violation> orderedViolations = new OrderedArrayList<>(comparator);
+        for (Violation violation : violations) {
+            orderedViolations.merge(violation, Violation::combineOffencesCounts);
         }
 
-        violationsByCity.sort(Comparator.comparing(Violation::getOffencesCount).reversed());
-
-        List<Violation> topNumbersList = violationsByCity.subList(0, topNumber);
-
-        return topNumbersList;
+        orderedViolations.sort(comparator.reversed());
+        return orderedViolations.subList(0, topNumber);
     }
 
 

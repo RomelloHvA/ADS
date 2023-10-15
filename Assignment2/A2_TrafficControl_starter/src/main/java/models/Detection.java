@@ -69,14 +69,14 @@ public class Detection {
      *          null if no offence was found.
      */
     public Violation validatePurple() {
-
         if (car.getFuelType() == FuelType.Diesel && (car.getCarType() == CarType.Coach || car.getCarType() == CarType.Truck)
-        && car.getEmissionCategory() < 6) {
+                && car.getEmissionCategory() < 6) {
             return new Violation(car, city);
         }
 
         return null;
     }
+
 
     public Car getCar() {
         return car;
