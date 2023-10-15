@@ -37,7 +37,7 @@ public class Detection {
      */
     public static Detection fromLine(String textLine, List<Car> cars) {
 
-        Detection newDetection = null;
+        Detection newDetection;
         try {
             String newCity = (textLine.split(",")[1].trim());
 
