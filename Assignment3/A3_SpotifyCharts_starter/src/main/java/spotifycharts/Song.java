@@ -130,4 +130,8 @@ public class Song {
     // TODO provide a toString implementation to format songs as in "artist/title{language}(total streamsCount)"
 
 
+    @Override
+    public String toString() {
+        return String.format("%s/%s{%s}(%d)", artist, title, language, getStreamsCountTotal());
+    }
 }
