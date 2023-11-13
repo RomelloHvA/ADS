@@ -1,5 +1,8 @@
 package spotifycharts;
 
+import java.util.EnumMap;
+import java.util.HashMap;
+
 public class Song {
 
     public enum Language {
@@ -27,6 +30,8 @@ public class Song {
 
     // TODO add instance variable(s) to track the streams counts per country
     //  choose a data structure that you deem to be most appropriate for this application.
+    private final HashMap<Country, Integer> streamsCountOfCountry;
+
 
 
 
@@ -37,8 +42,13 @@ public class Song {
         this.artist = artist;
         this.title = title;
         this.language = language;
-
         // TODO initialise streams counts per country as appropriate.
+
+        streamsCountOfCountry = new HashMap<>();
+        for (Country country : Country.values()) {
+            streamsCountOfCountry.put(country, 0);
+        }
+
 
     }
 
@@ -48,8 +58,7 @@ public class Song {
      * @param streamsCount
      */
     public void setStreamsCountOfCountry(Country country, int streamsCount) {
-        // TODO register the streams count for the given country.
-
+        streamsCountOfCountry.put(country, streamsCount);
     }
 
     /**
@@ -59,19 +68,20 @@ public class Song {
      */
     public int getStreamsCountOfCountry(Country country) {
         // TODO retrieve the streams count for the given country.
-
-
-        return 0; // replace by the proper amount
+        return streamsCountOfCountry.get(country);
     }
     /**
      * Calculates/retrieves the total of all streams counts across all countries from this song
      * @return
      */
     public int getStreamsCountTotal() {
-        // TODO calculate/get the total number of streams across all countries
+        int totalStreams = 0;
 
+        for (Country country: Country.values()) {
+            totalStreams += getStreamsCountOfCountry(country);
+        }
 
-        return 0; // replace by the proper amount
+        return totalStreams;
     }
 
 
