@@ -1,5 +1,6 @@
 package spotifycharts;
 
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
 
@@ -94,9 +95,7 @@ public class Song {
     public int compareByHighestStreamsCountTotal(Song other) {
         // TODO compare the total of stream counts of this song across all countries
         //  with the total of the other song
-
-
-        return 0;    // replace by proper result
+        return Integer.compare(other.getStreamsCountTotal(), getStreamsCountTotal());
     }
 
     /**
@@ -105,13 +104,22 @@ public class Song {
      * @param other     the other song to compare against
      * @return  negative number, zero or positive number according to Comparator conventions
      */
+
     public int compareForDutchNationalChart(Song other) {
         // TODO compare this song with the other song
         //  ordening all Dutch songs upfront and then by decreasing total number of streams
+        if (getLanguage() == Language.NL && other.getLanguage() == Language.NL) {
+            return compareByHighestStreamsCountTotal(other);
+        }
 
+        if (getLanguage() == Language.NL) {
+            return -1;
+        }
 
-
-        return 0;    // replace by proper result
+        if (other.getLanguage() == Language.NL) {
+            return 1;
+        }
+        return compareByHighestStreamsCountTotal(other);
     }
 
 
