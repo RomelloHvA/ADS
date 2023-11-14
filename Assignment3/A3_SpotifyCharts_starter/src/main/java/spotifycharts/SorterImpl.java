@@ -16,10 +16,29 @@ public class SorterImpl<E> implements Sorter<E> {
      */
     public List<E> selInsBubSort(List<E> items, Comparator<E> comparator) {
         // TODO implement selection sort or insertion sort or bubble sort
+        int n = items.size();
+        System.out.println(items);
+         E temp;
+         // Initialize if there has been a swap.
+        boolean isSwapped = false;
+        for(int i=0; i < n; i++){
+            isSwapped = false;
+            for(int j=1; j < (n-i); j++){
+                if(comparator.compare(items.get(j - 1), items.get(j)) > 0) {
+                    isSwapped = true;
+                    //swap elements
+                    temp = items.get(j-1);
+                    items.set(j-1, items.get(j));
+                    items.set(j, temp);
+                }
 
-
-
-
+            }
+            //If at the end of the loop there have been no swaps, the items are already sorted.
+            if (!isSwapped) {
+                break;
+            }
+        }
+        System.out.println(items + "sorted");
         return items;   // replace as you find appropriate
     }
 
