@@ -31,7 +31,7 @@ public class Song {
 
     // TODO add instance variable(s) to track the streams counts per country
     //  choose a data structure that you deem to be most appropriate for this application.
-    private final HashMap<Country, Integer> streamsCountOfCountry;
+    private final EnumMap<Country, Integer> streamsCountOfCountry;
 
 
 
@@ -45,7 +45,7 @@ public class Song {
         this.language = language;
         // TODO initialise streams counts per country as appropriate.
 
-        streamsCountOfCountry = new HashMap<>();
+        streamsCountOfCountry = new EnumMap<>(Country.class);
         for (Country country : Country.values()) {
             streamsCountOfCountry.put(country, 0);
         }
