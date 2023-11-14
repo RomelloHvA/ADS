@@ -27,9 +27,7 @@ public class SorterImpl<E> implements Sorter<E> {
                 if(comparator.compare(items.get(j - 1), items.get(j)) > 0) {
                     isSwapped = true;
                     //swap elements
-                    temp = items.get(j-1);
-                    items.set(j-1, items.get(j));
-                    items.set(j, temp);
+                    swap(items, j-1, j);
                 }
 
             }
@@ -39,8 +37,23 @@ public class SorterImpl<E> implements Sorter<E> {
             }
         }
         System.out.println(items + "sorted");
-        return items;   // replace as you find appropriate
+        return items;
     }
+
+    /**
+     * Helper function to swap to items
+     * @param items that need to be swapped
+     * @param i index of the first item
+     * @param j index of the second item
+     */
+
+    private void swap(List<E> items, int i, int j) {
+        E tempItem = items.get(i);
+        items.set(i, items.get(j));
+        items.set(j, tempItem);
+    }
+
+
 
     /**
      * Sorts all items by quick sort using the provided comparator
@@ -50,13 +63,41 @@ public class SorterImpl<E> implements Sorter<E> {
      * @param comparator
      * @return  the items sorted in place
      */
+
+    private int partition (List<E> items, int low, int high, Comparator<E> comparator){
+        E pivot = items.get(high);
+
+        int i = (low - 1);
+
+        for (int j = low; j <= high ; j++) {
+
+            if (comparator.compare(items.get(j), pivot) < 0) {
+                i++;
+                swap(items,i,j);
+            }
+        }
+        swap(items, i + 1, high);
+        return (i + 1);
+    }
+
+    private void recursiveQuickSort(List<E> items, int low, int high, Comparator<E> comparator) {
+        {
+            if (low < high) {
+
+                // pi is partitioning index
+                // is now at right place
+                int partitionIndex = partition(items, low, high, comparator);
+                // Separately sort elements before
+                // partition and after partition
+                recursiveQuickSort(items, low, partitionIndex - 1, comparator);
+                recursiveQuickSort(items, partitionIndex + 1, high, comparator);
+            }
+        }
+    }
     public List<E> quickSort(List<E> items, Comparator<E> comparator) {
         // TODO provide a recursive quickSort implementation,
-        //  that is different from the example given in the lecture
-
-
-
-        return items;   // replace as you find appropriate
+        recursiveQuickSort(items,0, items.size() - 1, comparator);
+        return items;
     }
 
     /**
