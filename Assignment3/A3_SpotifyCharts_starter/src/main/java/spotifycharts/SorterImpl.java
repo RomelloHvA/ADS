@@ -15,10 +15,7 @@ public class SorterImpl<E> implements Sorter<E> {
      * @return  the items sorted in place
      */
     public List<E> selInsBubSort(List<E> items, Comparator<E> comparator) {
-        // TODO implement selection sort or insertion sort or bubble sort
         int n = items.size();
-        System.out.println(items);
-         E temp;
          // Initialize if there has been a swap.
         boolean isSwapped = false;
         for(int i=0; i < n; i++){
@@ -36,7 +33,7 @@ public class SorterImpl<E> implements Sorter<E> {
                 break;
             }
         }
-        System.out.println(items + "sorted");
+//        System.out.println(items + "sorted");
         return items;
     }
 
@@ -95,7 +92,6 @@ public class SorterImpl<E> implements Sorter<E> {
         }
     }
     public List<E> quickSort(List<E> items, Comparator<E> comparator) {
-        // TODO provide a recursive quickSort implementation,
         recursiveQuickSort(items,0, items.size() - 1, comparator);
         return items;
     }
@@ -151,15 +147,9 @@ public class SorterImpl<E> implements Sorter<E> {
             // position 0 holds the root item of a heap of size i+1 organised by reverseComparator
             // this root item is the worst item of the remaining front part of the lead collection
 
-            // TODO swap item[0] and item[i];
-            //  this moves item[0] to its designated position
+            swap(items, 0, i);
 
-
-
-            // TODO the new root may have violated the heap condition
-            //  repair the heap condition on the remaining heap of size i
-
-
+            heapSink(items, i, reverseComparator);
 
         }
 
@@ -177,11 +167,11 @@ public class SorterImpl<E> implements Sorter<E> {
      * @param comparator
      */
     protected void heapSwim(List<E> items, int heapSize, Comparator<E> comparator) {
-        // TODO swim items[heapSize-1] up the heap until
-        //      i==0 || items[(i-1]/2] <= items[i]
-
-
-
+        for (int i = heapSize -1; i > 0; i--){
+            if (comparator.compare(items.get(i), items.get((i-1)/2)) < 0){
+                swap(items, i, (i-1)/2);
+            }
+        }
     }
     /**
      * Repairs the zero-based heap condition for its root items[0] on the basis of the comparator
@@ -194,10 +184,21 @@ public class SorterImpl<E> implements Sorter<E> {
      * @param comparator
      */
     protected void heapSink(List<E> items, int heapSize, Comparator<E> comparator) {
-        // TODO sink items[0] down the heap until
-        //      2*i+1>=heapSize || (items[i] <= items[2*i+1] && items[i] <= items[2*i+2])
+        int parentIndex = 0;
+        int childIndex = 2 * parentIndex + 1;
+        E sinker = items.get(parentIndex);
 
-
-
+        while(childIndex < heapSize){
+            if(childIndex + 1 < heapSize && comparator.compare(items.get(childIndex), items.get(childIndex + 1)) > 0){
+                childIndex++;
+            }
+            if(comparator.compare(sinker, items.get(childIndex)) < 0){
+                break;
+            }
+            items.set(parentIndex, items.get(childIndex));
+            items.set(childIndex, sinker);
+            parentIndex = childIndex;
+            childIndex = 2 * parentIndex + 1;
+        }
     }
 }

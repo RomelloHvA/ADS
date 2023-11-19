@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
 
-public class Song {
+public class Song implements Cloneable {
 
     public enum Language {
         EN, // English
@@ -137,7 +137,13 @@ public class Song {
 
     // TODO provide a toString implementation to format songs as in "artist/title{language}(total streamsCount)"
 
-
+    public Song clone() {
+        try {
+            return (Song) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
     @Override
     public String toString() {
         return String.format("%s/%s{%s}(%d)", artist, title, language, getStreamsCountTotal());
