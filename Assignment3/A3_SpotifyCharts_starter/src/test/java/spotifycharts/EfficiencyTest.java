@@ -38,7 +38,7 @@ public class EfficiencyTest {
         long durationQuick = 0;  //in milliseconds
         long durationHeap = 0;  //in milliseconds
 
-        while(amountOfSongs < 5000000 && durationBubble < 20000 && durationQuick < 20000 && durationHeap < 20000) {
+        while(amountOfSongs < 50000000) {
             System.out.println("Sorting run number: " + runNumber);
 
             for(int i = 0; i < NUMBER_OF_RUNS; i++) {
@@ -122,7 +122,7 @@ public class EfficiencyTest {
         List<Song> unsortedList = deepCopySongsList(songs);
         System.gc();
         long startTime = System.nanoTime();
-        sorter.topsHeapSort(unsortedList.size(),unsortedList, comparator);
+        sorter.topsHeapSort(25,unsortedList, comparator);
         long finishTime = System.nanoTime();
         System.out.println("HeapSorting " + amountOfSongs + " songs by highest streams count total took " + (finishTime - startTime)/1E6 + " miliseconds");
         heapSortDataToCSV.writeToFile(runNumber, runInRunNumber, amountOfSongs, ((finishTime - startTime)/1E6));

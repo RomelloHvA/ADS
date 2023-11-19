@@ -33,7 +33,6 @@ public class SorterImpl<E> implements Sorter<E> {
                 break;
             }
         }
-//        System.out.println(items + "sorted");
         return items;
     }
 
@@ -77,11 +76,18 @@ public class SorterImpl<E> implements Sorter<E> {
         return (i + 1);
     }
 
+    /**
+     * Helper function to recursively sort the items
+     * @param items that need to be sorted
+     * @param low index of the first item
+     * @param high index of the second item
+     * @param comparator to compare the items
+     */
+
     private void recursiveQuickSort(List<E> items, int low, int high, Comparator<E> comparator) {
         {
             if (low < high) {
 
-                // pi is partitioning index
                 // is now at right place
                 int partitionIndex = partition(items, low, high, comparator);
                 // Separately sort elements before
@@ -109,7 +115,6 @@ public class SorterImpl<E> implements Sorter<E> {
      *                      all other items >= any item in the lead collection
      */
     public List<E> topsHeapSort(int numTops, List<E> items, Comparator<E> comparator) {
-
         // the lead collection of numTops items will be organised into a (zero-based) heap structure
         // in the first numTops list positions using the reverseComparator for the heap condition.
         // that way the root of the heap will contain the worst item of the lead collection
@@ -138,7 +143,6 @@ public class SorterImpl<E> implements Sorter<E> {
                 heapSink(items, numTops, reverseComparator);
             }
         }
-
         // the first numTops positions of the list now contain the lead collection
         // the reverseComparator heap condition applies to this lead collection
         // now use heapSort to realise full ordening of this collection
@@ -146,11 +150,9 @@ public class SorterImpl<E> implements Sorter<E> {
             // loop-invariant: items[i+1..numTops-1] contains the tail part of the sorted lead collection
             // position 0 holds the root item of a heap of size i+1 organised by reverseComparator
             // this root item is the worst item of the remaining front part of the lead collection
-
             swap(items, 0, i);
 
             heapSink(items, i, reverseComparator);
-
         }
 
         return items;

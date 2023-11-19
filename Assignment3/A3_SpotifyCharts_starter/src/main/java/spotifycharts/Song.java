@@ -29,12 +29,7 @@ public class Song implements Cloneable {
     private final String title;
     private final Language language;
 
-    // TODO add instance variable(s) to track the streams counts per country
-    //  choose a data structure that you deem to be most appropriate for this application.
     private final EnumMap<Country, Integer> streamsCountOfCountry;
-
-
-
 
     /**
      * Constructs a new instance of Song based on given attribute values
@@ -43,14 +38,11 @@ public class Song implements Cloneable {
         this.artist = artist;
         this.title = title;
         this.language = language;
-        // TODO initialise streams counts per country as appropriate.
 
         streamsCountOfCountry = new EnumMap<>(Country.class);
         for (Country country : Country.values()) {
             streamsCountOfCountry.put(country, 0);
         }
-
-
     }
 
     /**
@@ -68,7 +60,6 @@ public class Song implements Cloneable {
      * @return
      */
     public int getStreamsCountOfCountry(Country country) {
-        // TODO retrieve the streams count for the given country.
         return streamsCountOfCountry.get(country);
     }
     /**
@@ -93,8 +84,6 @@ public class Song implements Cloneable {
      * @return  negative number, zero or positive number according to Comparator convention
      */
     public int compareByHighestStreamsCountTotal(Song other) {
-        // TODO compare the total of stream counts of this song across all countries
-        //  with the total of the other song
         return Integer.compare(other.getStreamsCountTotal(), getStreamsCountTotal());
     }
 
@@ -106,8 +95,6 @@ public class Song implements Cloneable {
      */
 
     public int compareForDutchNationalChart(Song other) {
-        // TODO compare this song with the other song
-        //  ordening all Dutch songs upfront and then by decreasing total number of streams
         if (getLanguage() == Language.NL && other.getLanguage() == Language.NL) {
             return compareByHighestStreamsCountTotal(other);
         }
@@ -135,8 +122,10 @@ public class Song implements Cloneable {
         return language;
     }
 
-    // TODO provide a toString implementation to format songs as in "artist/title{language}(total streamsCount)"
-
+    @Override
+    /**
+     * returns a clone of this song
+     */
     public Song clone() {
         try {
             return (Song) super.clone();
