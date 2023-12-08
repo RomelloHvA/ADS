@@ -4,6 +4,7 @@ import nl.hva.ict.ads.utils.xml.XMLParser;
 
 import javax.xml.stream.XMLStreamException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -41,12 +42,15 @@ public class Candidate {
         // every candidate shall have a last name
         String fullName = lastName;
 
-        // TODO prepend optional lastNamePrefix and optional firstName
-        //  to compose a unique and nicely formatted full name
+        Optional<String> optionalFirstName = Optional.ofNullable(firstName);
+        Optional<String> optionalLastNamePrefix = Optional.ofNullable(lastNamePrefix);
 
+        StringBuilder sb = new StringBuilder();
+        optionalFirstName.ifPresent(s -> sb.append(s).append(" "));
+        optionalLastNamePrefix.ifPresent(s -> sb.append(s).append(" "));
+        sb.append(lastName);
 
-
-        return fullName;
+        return sb.toString();
     }
 
     public String getFullName() {
@@ -67,19 +71,12 @@ public class Candidate {
         if (!(o instanceof Candidate)) return false;
         Candidate other = (Candidate) o;
 
-        // TODO provide the equality criterion to identify unique candidate instances
-        //  hint: every candidate shall have a unique full name within his/her party.
-
-
-        return false; // replace by a proper outcome
+        return this.getFullName().equals(other.getFullName()) && this.getParty().equals(other.getParty());
     }
 
     @Override
     public int hashCode() {
-        // TODO provide a hashCode that is consistent with above equality criterion
-
-
-        return 0; // replace by a proper outcome
+        return Objects.hash(this.getFullName(), this.getParty());
     }
 
     public String getFirstName() {

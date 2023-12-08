@@ -40,7 +40,9 @@ public class Constituency {
 
         // TODO initialise this.rankedCandidatesByParty with an appropriate Map implementation
         //  and this.pollingStations with an appropriate Set implementation organised by zipCode and Id
-
+        //  hint: use the appropriate factory methods in the Collections class
+        this.rankedCandidatesByParty = new TreeMap<>();
+        this.pollingStations = new TreeSet<>();
 
     }
 
