@@ -227,7 +227,7 @@ public abstract class Wagon {
     public Wagon reverseSequence() {
         // No action
         if (!hasNextWagon()){
-            return null;
+            return this;
 
             // Middle of sequence reverse
         } else if (hasPreviousWagon()) {
