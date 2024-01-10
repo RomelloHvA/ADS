@@ -41,8 +41,9 @@ public class Constituency {
         // TODO initialise this.rankedCandidatesByParty with an appropriate Map implementation
         //  and this.pollingStations with an appropriate Set implementation organised by zipCode and Id
         //  hint: use the appropriate factory methods in the Collections class
-        this.rankedCandidatesByParty = new TreeMap<>();
-        this.pollingStations = new TreeSet<>();
+        this.rankedCandidatesByParty = new HashMap<>();
+        this.pollingStations = new TreeSet<>(Comparator.comparing(PollingStation::getZipCode)
+                .thenComparing(PollingStation::getId));
 
     }
 
@@ -59,8 +60,22 @@ public class Constituency {
         // TODO  register the candidate in this constituency for his/her party at the given rank (ballot position)
         //  hint1: first check if a map of registered candidates already exist for the party of the given candidate
         //        then add the candidate to that map, if the candidate has not been registered before.
+        NavigableMap<Integer, Candidate> partyCandidates = rankedCandidatesByParty
+                .computeIfAbsent(candidate.getParty(), k -> new TreeMap<>());
 
-        return false;    // replace by a proper outcome
+
+        if (partyCandidates.containsKey(rank)) {
+            return false;
+        }
+
+        if (partyCandidates.containsValue(candidate)) {
+            return false;
+        }
+
+        partyCandidates.put(rank, candidate);
+
+        return true;
+
     }
 
     /**
@@ -71,9 +86,7 @@ public class Constituency {
         // TODO: return all parties that have been registered at this constituency
         //  hint: there is no need to build a new collection; just return what you have got...
 
-
-
-        return null;    // replace by a proper outcome
+        return new HashSet<>(this.getRankedCandidatesByParty().keySet());    // replace by a proper outcome
     }
 
     /**
@@ -85,8 +98,7 @@ public class Constituency {
     public Candidate getCandidate(Party party, int rank) {
         // TODO: return the candidate at the given rank in the given party
 
-
-        return null;    // replace by a proper outcome
+        return this.getRankedCandidatesByParty().get(party).get(rank);
     }
 
     /**
@@ -99,8 +111,7 @@ public class Constituency {
         //  hint: if the implementation classes of rankedCandidatesByParty are well chosen, this only takes one line of code
         //  hint: the resulting list may be immutable at your choice of implementation.
 
-
-        return null; // replace by a proper outcome
+        return new ArrayList<>(this.getRankedCandidatesByParty().get(party).values()); // replace by a proper outcome
     }
 
     /**
@@ -112,8 +123,9 @@ public class Constituency {
         // TODO collect all candidates of all parties of this Constituency into a Set.
         //  hint: flatMap may help...
 
-
-        return null;    // replace by a proper outcome
+        return this.getRankedCandidatesByParty().values().stream()
+                .flatMap(map -> map.values().stream())
+                .collect(Collectors.toSet()); // replace by a proper outcome
     }
 
     /**
@@ -128,8 +140,8 @@ public class Constituency {
         // TODO: return all polling stations that have been registered at this constituency
         //  hint: there is no need to build a new collection; just return what you have got...
 
-
-        return null; // replace by a proper outcome
+        return this.getPollingStations().subSet(new PollingStation("", firstZipCode, ""), true,
+                new PollingStation("uFFFF", lastZipCode, "uFFFF"), true); // replace by a proper outcome
     }
 
     /**
@@ -140,8 +152,10 @@ public class Constituency {
     public Map<Party,Integer> getVotesByParty() {
         // TODO prepare a map of total number of votes per party
 
+        return this.getPollingStations().stream()
+                .flatMap(pollingStation -> pollingStation.getVotesByParty().entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum)); // replace by a proper outcome
 
-        return null; // replace by a proper outcome
     }
 
     /**
