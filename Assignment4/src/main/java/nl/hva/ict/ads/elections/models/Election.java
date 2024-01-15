@@ -212,7 +212,7 @@ public class Election {
      * If the two relative distributions across parties are identical, then the distance will be zero
      * If some parties have relatively more votes in one distribution than the other, the outcome will be positive.
      * The lower the outcome, the more alike are the relative distributions of the voteCounts.
-     * ratign of votesCounts1 relative to votesCounts2.
+     * rating of votesCounts1 relative to votesCounts2.
      * see https://towardsdatascience.com/9-distance-measures-in-data-science-918109d069fa
      *
      * @param votesCounts1 one distribution of votes across parties.

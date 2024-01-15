@@ -64,11 +64,7 @@ public class Constituency {
                 .computeIfAbsent(candidate.getParty(), k -> new TreeMap<>());
 
 
-        if (partyCandidates.containsKey(rank)) {
-            return false;
-        }
-
-        if (partyCandidates.containsValue(candidate)) {
+        if (partyCandidates.containsKey(rank) || partyCandidates.containsValue(candidate)) {
             return false;
         }
 
