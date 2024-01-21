@@ -31,11 +31,20 @@ public abstract class AbstractGraph<V> {
      * @return
      */
     public Set<V> getAllVertices(V firstVertex) {
-        // TODO calculate recursively the set of all connected vertices that can be reached from the given start vertex
-        //  hint: reuse getNeighbours()
+        // DONE recursively build the adjacency list including all vertices that can be reached from firstVertex
+        return recursiveGetAllVertices(firstVertex, new HashSet<>());    // replace by a proper outcome
+    }
 
+    private Set<V> recursiveGetAllVertices(V current, Set<V> visited) {
+        if(visited.contains(current)) return visited;
+        visited.add(current);
 
-        return null;    // replace by a proper outcome
+        Set<V> neighbours = getNeighbours(current);
+        for(V neighbour : neighbours) {
+            recursiveGetAllVertices(neighbour, visited);
+        }
+
+        return visited;
     }
 
 
@@ -54,15 +63,35 @@ public abstract class AbstractGraph<V> {
     public String formatAdjacencyList(V firstVertex) {
         StringBuilder stringBuilder = new StringBuilder("Graph adjacency list:\n");
 
-        // TODO recursively build the adjacency list including all vertices that can be reached from firstVertex
-        //  following a recursive pre-order traversal of a spanning tree
-        //  using the above stringBuilder to format the list
-        //  hint: use the getNeighbours() method to retrieve the roots of the child subtrees.
-
-
+        //DONE recursively build the adjacency list including all vertices that can be reached from firstVertex
+        //following a recursive pre-order traversal of a spanning tree
+        //using the above stringBuilder to format the list
+        //hint: use the getNeighbours() method to retrieve the roots of the child subtrees.
+        // DONE
+        Set<V> visited = new HashSet<>();
+        recursiveFormatAdjacencyList(firstVertex, visited, stringBuilder);
 
         // return the result
         return stringBuilder.toString();
+    }
+
+    private void recursiveFormatAdjacencyList(V current, Set<V> uniqueVertices, StringBuilder stringBuilder) {
+        if(uniqueVertices.contains(current)) return;
+        uniqueVertices.add(current);
+
+        stringBuilder.append(current.toString()).append(": [");
+        Set<V> neighbours = getNeighbours(current);
+        String separator = "";
+        for(V neighbour : neighbours) {
+            stringBuilder.append(separator).append(neighbour.toString());
+            separator = ",";
+        }
+        stringBuilder.append("]\n");
+
+        for(V neighbour : neighbours) {
+            recursiveFormatAdjacencyList(neighbour, uniqueVertices, stringBuilder);
+        }
+
     }
 
 
@@ -144,11 +173,29 @@ public abstract class AbstractGraph<V> {
 
         if (startVertex == null || targetVertex == null) return null;
 
-        // TODO calculate the path from start to target by recursive depth-first-search
+        //DONE calculate the path from start to target by recursive depth-first-search
 
+        return recursiveDepthFirstSearch(startVertex, targetVertex, new HashSet<>());    // replace by a proper outcome, if any
+    }
 
-
-        return null;    // replace by a proper outcome, if any
+    private GPath recursiveDepthFirstSearch(V current, V target, Set<V> visited) {
+        if(visited.contains(current)) return null;
+        visited.add(current);
+        if(current.equals(target)) {
+            GPath path = new GPath();
+            path.vertices.addLast(current);
+            path.visited = visited;
+            return path;
+        }
+        for (V neighbour : getNeighbours(current)) {
+            GPath path = recursiveDepthFirstSearch(neighbour, target, visited);
+            if(path != null) {
+                path.vertices.addFirst(current);
+                path.visited = visited;
+                return path;
+            }
+        }
+        return null;
     }
 
 
@@ -164,11 +211,34 @@ public abstract class AbstractGraph<V> {
 
         if (startVertex == null || targetVertex == null) return null;
 
-        // TODO calculate the path from start to target by breadth-first-search
+        //DONE calculate the path from start to target by breadth-first-search
+        GPath path = new GPath();
+        path.vertices.addFirst(targetVertex);
+        path.visited.add(startVertex);
+        if(startVertex.equals(targetVertex)) return path;
+        Queue<V> fifoQueue = new LinkedList<>();
+        Map<V, V> vistedFrom = new HashMap<>();
 
+        fifoQueue.offer(startVertex);
+        vistedFrom.put(startVertex, null);
 
-
-
+        V current = fifoQueue.poll();
+        while(current != null) {
+            for (V neighbour : getNeighbours(current)) {
+                path.visited.add(neighbour);
+                if(neighbour.equals(targetVertex)) {
+                    while(current != null) {
+                        path.vertices.addFirst(current);
+                        current = vistedFrom.get(current);
+                    }
+                    return path;
+                } else if (!vistedFrom.containsKey(neighbour)) {
+                    vistedFrom.put(neighbour, current);
+                    fifoQueue.offer(neighbour);
+                }
+            }
+            current = fifoQueue.poll();
+        }
 
         return null;    // replace by a proper outcome, if any
     }
@@ -229,26 +299,57 @@ public abstract class AbstractGraph<V> {
         nearestMSTNode.weightSumTo = 0.0;
         minimumSpanningTree.put(startVertex, nearestMSTNode);
 
-        // TODO maybe more helper variables or data structures, if needed
+        //maybe more helper variables or data structures, if needed
 
+       PriorityQueue<MSTNode> priorityQueue = new PriorityQueue<>();
 
 
         while (nearestMSTNode != null) {
 
-            // TODO continue Dijkstra's algorithm to process nearestMSTNode
+            //continue Dijkstra's algorithm to process nearestMSTNode
             //  mark nodes as you find their current shortest path to be final
             //  if you hit the target: complete the path and bail out !!!
             //  register all visited vertices for statistical purposes
 
+            path.visited.add(nearestMSTNode.vertex);
 
+            if(nearestMSTNode.vertex.equals(targetVertex)) {
+                //found the target now build the path
+                while(nearestMSTNode != null) {
+                    path.vertices.addFirst(nearestMSTNode.vertex);
+                    nearestMSTNode = minimumSpanningTree.get(nearestMSTNode.parentVertex);
+                }
+                path.reCalculateTotalWeight(weightMapper);
+                return path;
+            }
+            //add all neighbours of nearestMSTNode to the priority queue
+            for (V neighbour : getNeighbours(nearestMSTNode.vertex)) {
+                if(!path.visited.contains(neighbour)) {
+                    //calculate the weight of the edge from nearestMSTNode to neighbour
+                    double weight = weightMapper.apply(nearestMSTNode.vertex, neighbour);
+                    if(!minimumSpanningTree.containsKey(neighbour)) {
+                        //add neighbour to the minimum spanning tree and the priority queue
+                        MSTNode mstNode = new MSTNode(neighbour);
+                        mstNode.parentVertex = nearestMSTNode.vertex;
+                        mstNode.weightSumTo = nearestMSTNode.weightSumTo + weight;
+                        minimumSpanningTree.put(neighbour, mstNode);
+                        priorityQueue.offer(mstNode);
+                    } else {
+                        // update the weightSumTo of neighbour in the minimum spanning tree and the priority queue
+                        MSTNode mstNode = minimumSpanningTree.get(neighbour);
+                        if(mstNode.weightSumTo > nearestMSTNode.weightSumTo + weight) {
+                            priorityQueue.remove(mstNode);
+                            mstNode.parentVertex = nearestMSTNode.vertex;
+                            mstNode.weightSumTo = nearestMSTNode.weightSumTo + weight;
+                            priorityQueue.offer(mstNode);
+                        }
+                    }
+                }
 
+            }
 
-
-
-            // TODO find the next nearest MSTNode that is not marked yet
-            nearestMSTNode = null;      // replace by a proper selection
+            nearestMSTNode = priorityQueue.poll();
         }
-
 
         return null;        // replace by a proper outcome, if any
     }
