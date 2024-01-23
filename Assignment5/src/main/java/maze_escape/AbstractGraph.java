@@ -2,7 +2,6 @@ package maze_escape;
 
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 
 public abstract class AbstractGraph<V> {
 
