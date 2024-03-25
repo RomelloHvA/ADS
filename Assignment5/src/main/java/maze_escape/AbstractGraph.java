@@ -36,8 +36,7 @@ public abstract class AbstractGraph<V> {
     }
 
     private Set<V> recursiveGetAllVertices(V current, Set<V> visited) {
-        if(visited.contains(current)) return visited;
-        visited.add(current);
+        if(!visited.add(current)) return visited;
 
         Set<V> neighbours = getNeighbours(current);
         for(V neighbour : neighbours) {
@@ -76,9 +75,8 @@ public abstract class AbstractGraph<V> {
     }
 
     private void recursiveFormatAdjacencyList(V current, Set<V> uniqueVertices, StringBuilder stringBuilder) {
-        if(uniqueVertices.contains(current)) return;
-        uniqueVertices.add(current);
-
+        if(!uniqueVertices.add(current)) return;
+        ;
         stringBuilder.append(current.toString()).append(": [");
         Set<V> neighbours = getNeighbours(current);
         String separator = "";
@@ -91,7 +89,6 @@ public abstract class AbstractGraph<V> {
         for(V neighbour : neighbours) {
             recursiveFormatAdjacencyList(neighbour, uniqueVertices, stringBuilder);
         }
-
     }
 
 
@@ -179,8 +176,7 @@ public abstract class AbstractGraph<V> {
     }
 
     private GPath recursiveDepthFirstSearch(V current, V target, Set<V> visited) {
-        if(visited.contains(current)) return null;
-        visited.add(current);
+        if(!visited.add(current)) return null;
         if(current.equals(target)) {
             GPath path = new GPath();
             path.vertices.addLast(current);
