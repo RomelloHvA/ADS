@@ -75,5 +75,38 @@ public class PrimMazeEscapeMainTest {
 
     }
 
+    @Test
+    void testDepthFirstSearchWithInvalidValues() {
+        assertNull(maze.depthFirstSearch(null, null));
+        assertNull(maze.depthFirstSearch(null, maze.getExitNode()));
+        assertNull(maze.depthFirstSearch(maze.getStartNode(), null));
+
+        assertNull(maze.depthFirstSearch(maze.getStartNode(),  WIDTH * HEIGHT + 1));
+        assertNull(maze.depthFirstSearch(WIDTH * HEIGHT + 1,  maze.getExitNode()));
+
+    }
+
+    @Test
+
+    void testBreadthfirstSearchWithInvalidValues(){
+        assertNull(maze.breadthFirstSearch(null, null));
+        assertNull(maze.breadthFirstSearch(null, maze.getExitNode()));
+        assertNull(maze.breadthFirstSearch(maze.getStartNode(), null));
+
+        assertNull(maze.breadthFirstSearch(maze.getStartNode(),  WIDTH * HEIGHT + 1));
+        assertNull(maze.breadthFirstSearch(WIDTH * HEIGHT + 1,  maze.getExitNode()));
+    }
+
+    @Test
+
+    void testDijkstraShortestPathWithInvalidValues(){
+        assertNull(maze.dijkstraShortestPath(null, null, null));
+        assertNull(maze.dijkstraShortestPath(null, maze.getExitNode(), null));
+        assertNull(maze.dijkstraShortestPath(maze.getStartNode(), null, null));
+
+        assertNull(maze.dijkstraShortestPath(maze.getStartNode(),  WIDTH * HEIGHT + 1, maze::manhattanTime ));
+        assertNull(maze.dijkstraShortestPath(WIDTH * HEIGHT + 1,  maze.getExitNode(), maze::manhattanTime));
+    }
+
 
 }
